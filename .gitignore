@@ -1,0 +1,19 @@
+# Build artifacts
+.arduino15/
+arduino-cli.yaml
+*.elf
+*.hex
+*.bin
+*.map
+*.log
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local test notes and secrets
+.env
+*.local.*
+
