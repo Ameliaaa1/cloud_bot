@@ -1,0 +1,27 @@
+name: Documentation and firmware sanity check
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "30 16 * * 0"
+
+permissions:
+  contents: read
+
+jobs:
+  sanity:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check expected project files
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s README.md
+          test -s cloud_bot-prototype-plan.md
+          test -s firmware/cloud_bot_existing_parts/cloud_bot_existing_parts.ino
+          test -s firmware/cloud_bot_light_test/cloud_bot_light_test.ino
+          grep -q "未完成" README.md
+          grep -q "12V" light-test-wiring.md
+
