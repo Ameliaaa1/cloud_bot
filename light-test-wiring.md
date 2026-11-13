@@ -56,4 +56,3 @@ GPIO13 不属于官方 AI Thinker 摄像头引脚映射，但与 microSD 共用�
 - FastLED 官方文档：https://fastled.io/docs/
 - WLED 接线与 AHCT125 说明：https://kno.wled.ge/basics/wiring-guides/
 - Espressif 相机引脚：https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/Camera/CameraWebServer/camera_pins.h
-

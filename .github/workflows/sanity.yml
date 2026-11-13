@@ -24,4 +24,3 @@ jobs:
           test -s firmware/cloud_bot_light_test/cloud_bot_light_test.ino
           grep -q "未完成" README.md
           grep -q "12V" light-test-wiring.md
-

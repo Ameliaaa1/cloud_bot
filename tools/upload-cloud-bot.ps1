@@ -16,4 +16,3 @@ if ($LASTEXITCODE -ne 0) { throw "Compile failed" }
 & $cli upload -p $Port --fqbn $fqbn $sketch
 if ($LASTEXITCODE -ne 0) { throw "Upload failed on $Port" }
 Write-Host "cloud_bot uploaded successfully to $Port"
-

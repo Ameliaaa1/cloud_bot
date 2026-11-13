@@ -4,18 +4,18 @@ import argparse, time
 from collections import deque
 from pathlib import Path
 import cv2, requests
-WEATHER_NAMES={"sunny":"晴天","cloudy":"阴天","rainy":"雨天"}
-def choose_mode(face_count, emotion, confidence):
+WEATHER_NAMES={"sunny":"SUNNY","cloudy":"CLOUDY","rainy":"RAINY"}
+def choose_mode(face_count, emotion, confidence, threshold=0.30):
     if face_count==0:return "cloudy"
-    if emotion in {"Happiness","Surprise"} and confidence>=0.45:return "sunny"
-    if emotion in {"Sadness","Anger","Fear","Disgust"} and confidence>=0.45:return "rainy"
+    if emotion in {"Happiness","Surprise"} and confidence>=threshold:return "sunny"
+    if emotion in {"Sadness","Anger","Fear","Disgust"} and confidence>=threshold:return "rainy"
     return "cloudy"
 def send_weather(base_url,mode,timeout=1.5):
     try:
         r=requests.post(f"{base_url.rstrip('/')}/weather",data={"mode":mode},timeout=timeout); r.raise_for_status(); return True
     except requests.RequestException:return False
 def main():
-    p=argparse.ArgumentParser(); p.add_argument("--url",default="http://192.168.4.1"); p.add_argument("--camera",type=int,default=0); p.add_argument("--interval",type=float,default=1.0); p.add_argument("--window",default="cloud_bot emotion prototype"); p.add_argument("--model",default="enet_b2_8"); p.add_argument("--engine",choices=("emotieff","deepface","haar"),default="emotieff"); a=p.parse_args()
+    p=argparse.ArgumentParser(); p.add_argument("--url",default="http://192.168.4.1"); p.add_argument("--camera",type=int,default=0); p.add_argument("--interval",type=float,default=1.0); p.add_argument("--window",default="cloud_bot emotion prototype"); p.add_argument("--model",default="enet_b2_8"); p.add_argument("--threshold",type=float,default=0.30); p.add_argument("--engine",choices=("emotieff","deepface","haar"),default="emotieff"); a=p.parse_args()
     casc=Path(cv2.data.haarcascades); face_cascade=cv2.CascadeClassifier(str(casc/"haarcascade_frontalface_default.xml")); smile_cascade=cv2.CascadeClassifier(str(casc/"haarcascade_smile.xml"))
     recognizer=None; deepface=None
     if a.engine=="emotieff":
@@ -48,7 +48,7 @@ def main():
                     except Exception: emotion,confidence=None,0.
                 else: emotion,confidence=None,0.
                 last_analysis=now
-            automatic=choose_mode(faces,emotion,confidence); history.append(automatic); target=forced or max(set(history),key=history.count); retry=(not last_ok and now-last_sent>=3.)
+            automatic=choose_mode(faces,emotion,confidence,a.threshold); history.append(automatic); target=forced or max(set(history),key=history.count); retry=(not last_ok and now-last_sent>=3.)
             if (target!=current or retry) and now-last_sent>=a.interval: last_ok=send_weather(a.url,target); current,last_sent=target,now; print(f"{WEATHER_NAMES[target]} ({'sent' if last_ok else 'offline'})")
             shown=current or target; cue=f"{emotion or 'none'} {confidence:.0%}"; status=f"mode: {WEATHER_NAMES[shown]} | faces: {faces} | emotion: {cue}"+(" | manual" if forced else "")
             if not last_ok and now-last_sent<3:status+=" | ESP32 offline?"
@@ -60,4 +60,3 @@ def main():
     finally:cam.release(); cv2.destroyAllWindows()
     return 0
 if __name__=="__main__":raise SystemExit(main())
-

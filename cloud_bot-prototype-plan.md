@@ -116,4 +116,3 @@ V0.1 验收：能稳定演示天气变化、真实短时出雾、人工定量滴
 - Espressif CameraWebServer 示例：https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/Camera/CameraWebServer/CameraWebServer.ino
 - WLED 接线与电平转换指南：https://kno.wled.ge/basics/wiring-guides/
 - DFRobot 电容式土壤湿度探头与校准：https://wiki.dfrobot.com/sen0193/
-

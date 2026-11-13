@@ -37,4 +37,3 @@
 摄像头引脚与初始化参考 Espressif 官方 CameraWebServer 示例：
 https://github.com/espressif/arduino-esp32/tree/master/libraries/ESP32/examples/Camera/CameraWebServer
 
-

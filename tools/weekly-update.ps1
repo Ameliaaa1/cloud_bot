@@ -11,4 +11,3 @@ try {
   git commit -m $Message
   git push origin main
 } finally { Pop-Location }
-

@@ -1,0 +1,111 @@
+{
+  "parts": [
+    {
+      "name": "01 Chassis - dry wet divider",
+      "bodies": 1,
+      "description": "Prototype polymer carrier; all liquid must remain inside sealed cartridge."
+    },
+    {
+      "name": "02 Removable cloud cage",
+      "bodies": 1,
+      "description": "Diffuser support; dress with removable translucent cover, keep underside mist port clear."
+    },
+    {
+      "name": "03 LED saddle left",
+      "bodies": 1,
+      "description": "12 mm wide LED carrier; verify actual strip width and cut-group length."
+    },
+    {
+      "name": "04 LED saddle right",
+      "bodies": 1,
+      "description": "Two 50 mm mounting zones. Final LED cut groups pending measurement."
+    },
+    {
+      "name": "05 Reservoir cartridge - 10 mL target",
+      "bodies": 1,
+      "description": "36 x 22 x 22 mm, cavity 33 x 19 x 19 mm = 11.91 mL gross. NOT a validated sealed tank."
+    },
+    {
+      "name": "06 Tank lid with refill neck",
+      "bodies": 1,
+      "description": "Removable gasketed lid concept, gasket compression and fasteners to finalize after atomizer selection."
+    },
+    {
+      "name": "07 Refill plug - silicone concept",
+      "bodies": 1,
+      "description": "Friction plug; real sealing fit requires material testing."
+    },
+    {
+      "name": "08 Lid gasket - placeholder",
+      "bodies": 1,
+      "description": "0.3 mm clearance shown. Specify actual seal before wet use."
+    },
+    {
+      "name": "09 Mist head mount - placeholder",
+      "bodies": 1,
+      "description": "Assumed 16 mm disc envelope; replace with selected matched atomizer and driver."
+    },
+    {
+      "name": "10 Atomizer envelope - NOT selected",
+      "bodies": 1,
+      "description": "Dummy 16 x 2 mm envelope, no claim of actual compatibility."
+    },
+    {
+      "name": "11 ESP32 CAM envelope - measure first",
+      "bodies": 2,
+      "description": "40 x 27 x 10 mm simplified envelope. Connector/pin clearance not validated."
+    },
+    {
+      "name": "12 Electronics removable tray",
+      "bodies": 1,
+      "description": "Upright camera cradle. Lens faces toward negative Y; soft-cover viewing aperture and connector fit require hardware measurement."
+    },
+    {
+      "name": "13 Soil stake left - stainless 3 mm",
+      "bodies": 1,
+      "description": "145 mm straight structural rod; lower 55 mm in soil. No strength or pull-out validation."
+    },
+    {
+      "name": "13 Soil stake right - stainless 3 mm",
+      "bodies": 1,
+      "description": "145 mm straight structural rod; lower 55 mm in soil. No strength or pull-out validation."
+    },
+    {
+      "name": "14 Silver decorative branches",
+      "bodies": 6,
+      "description": "Shapeable wire ornament; structural loads carried by two straight rods. Bend templates only."
+    },
+    {
+      "name": "15 Rear power cable route - reference",
+      "bodies": 1,
+      "description": "Route low-voltage supply externally along rear stake. Supply and driver not designed here."
+    },
+    {
+      "name": "90 Cloud soft cover ENVELOPE - hide for internals",
+      "bodies": 9,
+      "description": "Spheres indicate removable diffuser volume only, not a solid printable shell."
+    },
+    {
+      "name": "91 Flowerpot reference - 120 mm OD",
+      "bodies": 1,
+      "description": "Reference only; user has no selected pot. Rim z=10, soil z=0, base z=-100."
+    },
+    {
+      "name": "16 Tank retaining bridge L",
+      "bodies": 1,
+      "description": "Removable concept hold-down. Fit and compression need prototype testing; not a verified watertight closure."
+    },
+    {
+      "name": "16 Tank retaining bridge R",
+      "bodies": 1,
+      "description": "Removable concept hold-down. Fit and compression need prototype testing; not a verified watertight closure."
+    }
+  ],
+  "timeline_count": 279,
+  "feature_errors": [],
+  "units": "mm",
+  "reservoir_gross_ml": 11.913,
+  "working_volume_target_ml": 10,
+  "checked_interferences": [],
+  "interference_scope": "Structural parts, camera and atomizer envelopes, retaining bridges; excludes decorative branches, power cable and reference cover/pot."
+}

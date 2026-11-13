@@ -17,3 +17,13 @@ Thumbs.db
 .env
 *.local.*
 
+# Python caches and local reference material
+__pycache__/
+*.py[cod]
+video_reference/
+
+# Intermediate Fusion build output (final reports are tracked explicitly)
+design/v7-cad/build-progress.txt
+design/v7-cad/SUCCESS.txt
+design/v7-cad/appearance-libraries.json
+design/v7-cad/interference.json

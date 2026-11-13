@@ -1,0 +1,8 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "script",
+  "author": "Cloud Bot project",
+  "description": {"": "Build the Cloud Bot V7 editable prototype assembly"},
+  "version": "1.0.0",
+  "supportedOS": "windows|mac"
+}
