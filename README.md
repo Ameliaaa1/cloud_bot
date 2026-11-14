@@ -32,6 +32,7 @@ cloud_bot 是一款桌面陪伴原型：用一朵云表达天气状态，并逐�
 - [STEP 交换模型](design/v7-cad/CloudBot-V7.step)：用于跨 CAD 软件查看与交换。
 - [结构说明与下一轮验证](design/v7-cad/README-中文.md)、[内部结构图](design/v7-cad/v7-internals.png)。
 - [Fusion 生成脚本](design/fusion/CloudBotV7/CloudBotV7.py)、[现有检查报告](design/v7-cad/validation.json)。
+- [第一版打印实物与试装问题](design/v7-cad/README-中文.md#第一版实物试打记录)：实物照片、卡扣与孔位反馈、出雾座支撑、摄像头托盘的 CAD／STL 差异及下一轮试装计划。
 
 当前设计为约 140 mm 宽的云外观、两根直径 3 mm 插杆和约 10 mL 工作容量的水箱。最终检查报告在所列结构件与硬件占位件范围内记录的干涉为空；该检查排除了装饰枝、电源线、外罩及参考花盆，也不代表防漏、强度或实物适配验证。本次上传核对了现有文件和报告，未重新运行 Fusion 或硬件测试。
 
