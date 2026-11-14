@@ -4,54 +4,40 @@
 #include <WiFi.h>
 #include <WebServer.h>
 #include "esp_camera.h"
+#include "web_app.h"
 
 WebServer server(80);
 bool cameraReady = false;
 String weather = "cloudy";
+String controlMode = "auto";
+String proposal = "cloudy";
+bool autoOnline = false;
+uint32_t lastAuto = 0, lastPulse = 0;
+bool mistSim = false;
+
+// Hardware outputs deliberately remain disabled until matching drivers are fitted.
+// This scheduler simulates at most one 300 ms mist pulse per 60 seconds.
+void updateOutputs() {
+  const uint32_t now = millis();
+  if (autoOnline && uint32_t(now-lastAuto)>10000) {
+    autoOnline=false;
+    if (controlMode=="auto") weather="cloudy";
+  }
+  if (weather!="rainy") mistSim=false;
+  else if (uint32_t(now-lastPulse)>=60000) { lastPulse=now;mistSim=true; }
+  if (mistSim && uint32_t(now-lastPulse)>=300) mistSim=false;
+}
+
 const char PAGE[] PROGMEM = R"CLOUDBOT(
-<!doctype html><html lang="zh-CN"><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>cloud_bot · 桌面陪伴原型</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#f0f3f6;color:#344154;font:16px system-ui,sans-serif}
-main{max-width:760px;margin:32px auto;padding:24px}h1{font-size:30px;margin-bottom:6px}p{line-height:1.7}.sub{color:#667486}
-.scene{height:300px;position:relative;overflow:hidden;border-radius:28px;background:#e1e7ed;transition:background 2s}
-.sun{position:absolute;left:55%;top:35px;width:65px;height:65px;border-radius:50%;background:#ffd585;opacity:0;transition:opacity 2s}
-.cloud{position:absolute;top:75px;left:50%;width:180px;height:68px;transform:translateX(-50%);border-radius:70px;background:#abb7c4;animation:float 4s ease-in-out infinite;transition:background 2s}
-.cloud:before,.cloud:after{content:'';position:absolute;background:inherit;border-radius:50%}.cloud:before{width:90px;height:90px;left:24px;top:-40px}.cloud:after{width:75px;height:75px;right:15px;top:-25px}
-.face{position:absolute;z-index:1;left:63px;top:22px;font-size:22px;letter-spacing:8px}
-.rain{position:absolute;left:50%;top:154px;transform:translateX(-50%);display:flex;gap:22px;opacity:0;transition:opacity 1s}
-.rain i{width:2px;height:13px;background:#9bb7c8;border-radius:4px;animation:fall 1.2s infinite}.rain i:nth-child(2n){animation-delay:-.6s}
-.plant{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:58px}
-.scene[data-weather=sunny]{background:#f8edda}.scene[data-weather=sunny] .cloud{background:#fffdf8}.scene[data-weather=sunny] .sun{opacity:1}
-.scene[data-weather=rainy]{background:#d4dde5}.scene[data-weather=rainy] .cloud{background:#82909f}.scene[data-weather=rainy] .rain{opacity:1}
-.controls{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}button{border:1px solid #b3bdca;background:white;color:#344154;border-radius:12px;padding:12px 18px;font:inherit;cursor:pointer}
-button[aria-pressed=true]{background:#344154;color:white}button:focus-visible{outline:3px solid #9a7200;outline-offset:3px}
-.panel{background:white;border-radius:20px;padding:20px;margin-top:18px}img{display:block;width:100%;max-width:320px;border-radius:12px;margin:12px 0}img[hidden]{display:none}
-#status{min-height:28px}small{color:#667486}@keyframes float{50%{transform:translate(-50%,-7px)}}@keyframes fall{to{transform:translateY(45px);opacity:0}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-</style><main><h1>cloud_bot</h1><p class="sub">一朵云，陪你照顾一株小植物。</p>
-<div class="scene" data-weather="cloudy" id="scene" role="img" aria-label="阴天的云朵"><div class="sun"></div><div class="cloud"><span class="face">•ᴗ•</span></div><div class="rain"><i></i><i></i><i></i><i></i><i></i></div><div class="plant">🪴</div></div>
-<div class="controls"><button data-mode="sunny">晴天</button><button data-mode="cloudy">阴天</button><button data-mode="rainy">下雨</button></div>
-<p id="status" role="status">正在连接设备…</p>
-<div class="panel"><strong>摄像头预览</strong><p>默认关闭。开启后约每秒刷新一张照片，可随时停止。</p><button id="camera" aria-pressed="false">开启预览</button><img id="photo" alt="ESP32-CAM 拍摄画面" hidden><p id="cameraStatus" role="status"></p></div>
-<p><small>当前为手动天气互动＋摄像头取景，尚未加入表情识别。雨和盆栽为屏幕模拟效果；没有驱动实体灯带、喷雾或水泵。程序不保存照片，不上传云端。</small></p>
-</main><script>
-const scene=document.getElementById('scene'),statusLine=document.getElementById('status');
-const names={sunny:'晴天',cloudy:'阴天',rainy:'雨天'};
-function render(mode){scene.dataset.weather=mode;scene.setAttribute('aria-label',names[mode]+'的云朵');document.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));}
-let busy=false;
-async function sync(mode){if(busy)return;busy=true;const abort=new AbortController(),timeout=setTimeout(()=>abort.abort(),5000);try{const response=await fetch(mode?'/weather':'/state',{method:mode?'POST':'GET',headers:mode?{'Content-Type':'application/x-www-form-urlencoded'}:{},body:mode?'mode='+encodeURIComponent(mode):undefined,signal:abort.signal});if(!response.ok)throw Error();const state=await response.json();render(state.weather);statusLine.textContent='设备已连接 · '+names[state.weather];}catch(e){statusLine.textContent='连接中断，请检查 cloud_bot Wi-Fi，然后刷新页面。';}finally{clearTimeout(timeout);busy=false;}}
-document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>sync(b.dataset.mode));
-const photo=document.getElementById('photo'),cameraButton=document.getElementById('camera'),cameraStatus=document.getElementById('cameraStatus');
-let preview=false,timer;
-function capture(){if(preview)photo.src='/capture?t='+Date.now();}
-function schedule(){clearTimeout(timer);if(preview)timer=setTimeout(capture,1000);}
-photo.onload=()=>{if(preview){cameraStatus.textContent='预览中 · 点击停止即可暂停取景';schedule();}};
-photo.onerror=()=>{if(preview){cameraStatus.textContent='取景失败，请检查串口日志、摄像头排线或 USB 供电。';schedule();}};
-cameraButton.onclick=()=>{preview=!preview;clearTimeout(timer);photo.hidden=!preview;cameraButton.textContent=preview?'停止预览':'开启预览';cameraButton.setAttribute('aria-pressed',String(preview));cameraStatus.textContent=preview?'正在取景…':'预览已停止';if(preview)capture();else photo.removeAttribute('src');};
-sync();setInterval(()=>sync(),3000);
-</script></html>
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>cloud_bot</title><style>
+*{box-sizing:border-box}body{margin:0;background:#edf1f4;color:#111;font:16px system-ui}main{max-width:740px;margin:30px auto;padding:24px}button{padding:12px 18px;margin:5px;border:1px solid #888;border-radius:12px;background:white;color:#111;font:inherit;cursor:pointer}button[aria-pressed=true]{border:3px solid #19495a;background:#d9edf4}button:disabled{opacity:.5}.scene{height:240px;display:grid;place-items:center;background:#dce4ea;border-radius:24px;font-size:100px}.scene[data-weather=sunny]{background:#fff0c9}.scene[data-weather=rainy]{background:#b5c2cd}.panel{background:white;padding:18px;margin-top:16px;border-radius:18px}p{line-height:1.7}img{max-width:100%;width:320px}#status{min-height:28px}small{color:#333}
+</style><main><h1>cloud_bot</h1><p>一朵云，陪你照顾一株小植物。</p><div id="scene" class="scene" role="img" aria-label="阴天">☁️</div>
+<div id="controls"><button data-control="auto">自动识别</button><button data-weather="sunny">晴天</button><button data-weather="cloudy">阴天</button><button data-weather="rainy">雨天</button></div><p id="status" role="status">正在连接…</p>
+<div class="panel"><strong>输出预览</strong><p id="outputs">等待设备状态</p><small>灯光与喷雾目前为软件模拟，实体输出尚未启用。</small></div>
+<div class="panel"><strong>设备摄像头</strong><p>电脑表情识别使用电脑摄像头；下面是 ESP32 镜头的独立取景。</p><button id="camera">开启预览</button><br><img id="photo" hidden alt="设备摄像头画面"><p id="cameraStatus" role="status"></p></div>
+<p><small>表情只作为互动线索。图像在本地处理，程序不保存或上传照片。</small></p></main>
+<script src="/app.js"></script></html>
 )CLOUDBOT";
 
 bool initCamera() {
@@ -73,9 +59,16 @@ bool initCamera() {
   return true;
 }
 
+String stateJson() {
+  updateOutputs();
+  String out="{\"version\":2,\"weather\":\""+weather+"\",\"control\":\""+controlMode+"\",\"camera\":"+(cameraReady?"true":"false");
+  out+=",\"auto_online\":"+String(autoOnline?"true":"false")+",\"outputs\":{\"hardware_enabled\":false,\"light\":\""+weather+"\",\"mist_simulated\":"+String(mistSim?"true":"false")+"}}";
+  return out;
+}
+
 void sendState() {
   server.sendHeader("Cache-Control", "no-store");
-  server.send(200, "application/json", "{\"weather\":\"" + weather + "\",\"camera\":" + (cameraReady ? "true" : "false") + "}");
+  server.send(200,"application/json",stateJson());
 }
 
 void setup() {
@@ -86,12 +79,23 @@ void setup() {
   if (!WiFi.softAP("cloud_bot", "set-a-local-password")) Serial.println("AP failed; restart board.");
   server.on("/", HTTP_GET, []() { server.send_P(200, "text/html; charset=utf-8", PAGE); });
   server.on("/state", HTTP_GET, sendState);
+  server.on("/app.js", HTTP_GET, []() { server.send_P(200,"application/javascript; charset=utf-8",APP_JS); });
+  server.on("/control", HTTP_POST, []() {
+    const String value=server.arg("mode");
+    if (value!="auto" && value!="manual") { server.send(400,"text/plain","Invalid control");return; }
+    controlMode=value;
+    if (value=="auto") weather=autoOnline?proposal:"cloudy";
+    sendState();
+  });
   server.on("/weather", HTTP_POST, []() {
-    const String requested = server.arg("mode");
-    if (requested != "sunny" && requested != "cloudy" && requested != "rainy") {
-      server.send(400, "text/plain", "Invalid weather"); return;
-    }
-    weather = requested; Serial.println("Weather: " + weather); sendState();
+    const String requested=server.arg("mode"), source=server.arg("source");
+    if (requested!="sunny" && requested!="cloudy" && requested!="rainy") { server.send(400,"text/plain","Invalid weather");return; }
+    if (source!="" && source!="manual" && source!="auto") { server.send(400,"text/plain","Invalid source");return; }
+    if (source=="auto") {
+      proposal=requested;lastAuto=millis();autoOnline=true;
+      if (controlMode=="auto") weather=requested;
+    } else { controlMode="manual";weather=requested; }
+    Serial.println("Weather: "+weather+" / "+controlMode);sendState();
   });
   server.on("/capture", HTTP_GET, []() {
     if (!cameraReady) { server.send(503, "text/plain", "Camera unavailable"); return; }
@@ -113,5 +117,9 @@ void setup() {
   Serial.print("Open http://"); Serial.println(WiFi.softAPIP());
 }
 
-void loop() { server.handleClient(); delay(2); }
+void loop() {
+  updateOutputs();server.handleClient();
+  if (Serial.available() && Serial.read()=='?') Serial.println(stateJson());
+  delay(2);
+}
 
