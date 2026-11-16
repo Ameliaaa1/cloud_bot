@@ -1,118 +1,118 @@
-# cloud_bot 实体原型 V0.1
+# cloud_bot Physical Prototype V0.1
 
-当前执行方案：优先使用现有 ESP32-CAM、MB 底座和 USB 数据线，先运行摄像头＋浏览器天气互动，不要求补购。操作入口为 START-HERE-existing-parts.md，程序为 firmware/cloud_bot_existing_parts/cloud_bot_existing_parts.ino。本文的灯带、双板、水路采购作为后续阶段规划。
+Current execution plan: prioritize the existing ESP32-CAM, MB baseboard, and USB data cable to run camera and browser-based weather interaction first, without requiring additional purchases. Start with START-HERE-existing-parts.md; the program is firmware/cloud_bot_existing_parts/cloud_bot_existing_parts.ino. The LED strip, dual-board arrangement, and water-system purchases described here are plans for later stages.
 
-目标：制作一台能通过按钮或电脑指令改变天气、真实出雾，并给下方盆栽定量补水的桌面样机。随后接入摄像头表情输入。
+Goal: build a desktop prototype that changes weather through buttons or computer commands, produces real mist, and dispenses measured amounts of water to the plant below. Add camera-based facial-expression input afterward.
 
-最新实物更正：用户没有 ESP8266，前文基于订单作出的库存推断不成立。现有 ESP32-CAM + MB 底座已拍照确认；灯带本体确认印有 12V、DI、DO、GND。第一阶段改用 ESP32-CAM 的 GPIO13 做灯光独立测试，详见 light-test-wiring.md 和 firmware/cloud_bot_light_test/cloud_bot_light_test.ino。下文 ESP8266 双板方案保留作为历史扩展方案，非必须采购项；雾化与滴灌阶段再评估是否加普通 ESP32 开发板。
+Latest physical-inventory correction: the user does not have an ESP8266; the earlier inventory inference based on an order was incorrect. Photos have confirmed the existing ESP32-CAM and MB baseboard, and the strip itself is marked 12V, DI, DO, and GND. Stage one now uses ESP32-CAM GPIO13 for a standalone lighting test; see light-test-wiring.md and firmware/cloud_bot_light_test/cloud_bot_light_test.ino. The ESP8266 dual-board design below is retained as a historical expansion option, not a required purchase. Reassess whether to add a standard ESP32 development board at the misting and drip-irrigation stage.
 
-本文是设计规划，未完成硬件接线、制造或程序验证。尺寸、时序是起始试验参数，须以实物测试修订。
+This document is a design plan, not a record of completed hardware wiring, fabrication, or program validation. Dimensions and timing values are initial experimental parameters and must be revised through physical testing.
 
-## 1. 现有零件与分工
+## 1. Existing Parts and Roles
 
-根据用户提供的订单截图，不能替代实物型号核对：
+The following identifications came from order screenshots supplied by the user and do not replace checking the physical models:
 
-| 零件 | 识别结果 | 原型用途 |
+| Part | Identification | Prototype role |
 |---|---|---|
-| ESP32-CAM 与烧录底座 | 订单明确标注，具体板型待核对 | 通过局域网向电脑提供图像 |
-| ESP8266 NodeMCU V3，CH340 | 订单明确标注 | 独立控制灯带、出雾、水泵、按钮 |
-| 0.5 米、30 灯 RGB 灯带 | 所选规格写 WS2811、12V，标题也混用 WS2812 | 云朵天气灯效；核对实物电压、DIN、芯片和分组方式后再接电 |
-| STC89C52 学习套件 | 截图为 51 单片机套餐 | 按钮、线材等可检查后复用，主板暂不使用 |
-| 马达 | 截图未确认种类与额定参数 | 暂不加入，后续可用舵机做太阳探头动作 |
+| ESP32-CAM and programming baseboard | Explicitly listed in the order; exact board model to be checked | Supply images to the computer over the local network |
+| ESP8266 NodeMCU V3, CH340 | Explicitly listed in the order | Independently control the LED strip, misting, pump, and buttons |
+| 0.5 m, 30-LED RGB strip | Selected specification says WS2811, 12V; the title also mixes in WS2812 | Cloud weather lighting; verify physical voltage, DIN, chip, and grouping before applying power |
+| STC89C52 learning kit | Screenshot shows an 8051 microcontroller kit | Buttons, wires, and similar parts may be reused after inspection; do not use its main board for now |
+| Motor | Type and ratings not confirmed in the screenshot | Leave out for now; a servo could later move a sun-shaped element |
 
-普通马达不能代替水泵或雾化器。12V 灯带不能从开发板供电，也不能把 12V 接到开发板 5V/3V3 引脚。
+An ordinary motor cannot replace a water pump or misting module. Do not power a 12V strip from the development board or connect 12V to the board's 5V/3V3 pins.
 
-## 2. 外形和结构
+## 2. Form and Structure
 
-建议试作尺寸：底座宽 200 × 深 180 mm，总高约 280 mm；云朵宽 160 × 深 100 × 高 80 mm。盆栽直径约 70–90 mm。均为外观目标，模块选定后调整。
+Suggested trial dimensions: base 200 mm wide × 180 mm deep, total height about 280 mm; cloud 160 mm wide × 100 mm deep × 80 mm high. Plant-pot diameter about 70–90 mm. These are appearance targets and should be adjusted after selecting the modules.
 
-- 后方固定支架托住云朵，内部走线和滴灌软管；不采用磁悬浮。
-- 云朵分为可拆上盖、干燥灯光腔、独立防水雾化盒。浅灰半透明外壳配内部扩散罩。
-- 云朵内部固定配套雾化组件的小储水盒，先按 30–50 mL 预留空间；具体容量由模块尺寸决定。加水时取下水盒，不直接向整机灌水。
-- 雾化组件保持厂家要求的工作方向和水位，通过短导流罩尝试向下出雾。不能倒装普通加湿器来实现向下喷雾。
-- 底座设置可取出的花盆、接水盘、独立滴灌水箱，初步按约 100–150 mL 预留；电子仓位于隔水挡板另一侧，避开水箱下方。
-- 灯带安装在干区散热支撑件上，不与吸水棉、积水接触。接水盘溢水路径远离电子仓。
-- 用云下侧光提高水雾可见度。水雾有气流与浮升，不能承诺像雨滴一样垂直落下。
+- A fixed rear support holds the cloud and routes wiring and drip tubing internally; no magnetic levitation.
+- Divide the cloud into a removable top cover, a dry lighting chamber, and a separate waterproof misting box. Use a light-gray translucent shell with an internal diffuser.
+- Mount a small reservoir for the matched misting assembly inside the cloud, initially reserving space for 30–50 mL; actual capacity depends on module dimensions. Remove the reservoir to refill it rather than pouring water into the whole device.
+- Keep the misting assembly in its manufacturer's specified orientation and water level. Try a short outlet shroud to direct mist downward. Do not invert an ordinary humidifier to obtain downward mist.
+- Put a removable plant pot, catch tray, and separate drip-irrigation reservoir in the base, initially reserving about 100–150 mL. Place the electronics compartment on the other side of a water barrier, not beneath a reservoir.
+- Mount the LED strip on a heat-dissipating support in the dry area, away from absorbent cotton and standing water. Route catch-tray overflow away from electronics.
+- Use side lighting beneath the cloud to make mist more visible. Mist is affected by airflow and buoyancy; it cannot be promised to fall vertically like raindrops.
 
-先用模块、塑料盒与简单支架验证出雾，再根据测试结果制作云朵外壳。若短导流仍导致大量冷凝或外飘，保留云下方局部雾效，滴灌负责实际补水。
+Validate mist production with modules, plastic containers, and a simple support before fabricating the cloud shell. If a short shroud still causes substantial condensation or drifting, retain a localized mist effect beneath the cloud and use drip irrigation for actual watering.
 
-## 3. 系统分工
+## 3. System Roles
 
-ESP32-CAM → 局域网图像 → 电脑表情程序 → 局域网指令 → ESP8266。
+ESP32-CAM → local-network images → computer facial-expression program → local-network commands → ESP8266.
 
-按钮 → ESP8266 → 灯带、雾化模块、滴灌泵。
+Buttons → ESP8266 → LED strip, misting module, drip pump.
 
-先用电脑摄像头也能调试表情程序，随后换成 ESP32-CAM 的图像。电脑完成运算，摄像头板无需承担情绪推断。识别输出先限定微笑、明显皱眉、未确定三类表情线索，不将它们等同于真实心理状态。默认本地处理、不存照片，并提供暂停摄像头功能。
+A computer webcam can be used to debug the facial-expression program before switching to ESP32-CAM images. Computation runs on the computer; the camera board does not need to infer emotions. Initially limit recognition outputs to three facial cues: smiling, clearly frowning, and undetermined. Do not equate these cues with a person's actual psychological state. Process locally by default, do not save photos, and provide a camera-pause function.
 
-第一版 ESP8266 使用自定义非阻塞控制程序，提供晴天、阴天、下雨、停止、定量补水命令；灯效可使用兼容灯带的库。WLED 可用于单独灯带测试，但水路仍需独立控制逻辑。
+The first ESP8266 version uses a custom nonblocking controller with sunny, cloudy, rainy, stop, and measured-watering commands. Lighting effects may use a strip-compatible library. WLED can be used for standalone strip testing, but the water system still needs separate control logic.
 
-## 4. 天气体验
+## 4. Weather Experience
 
-| 状态 | 灯效 | 雾与水 |
+| State | Lighting | Mist and water |
 |---|---|---|
-| 晴天 | 暖白、柔和渐亮 | 不出雾；不因开心而浇水 |
-| 阴天 | 低亮冷白，浅灰外壳显现 | 不出雾 |
-| 雨天 | 暗淡冷白，云下侧光 | 初始试验每次出雾 2 秒，随后至少停 60 秒；根据实测调整 |
-| 恢复 | 约 20 秒缓慢转暖 | 停止出雾 |
-| 停止/缺水 | 柔和状态提示 | 关闭雾化与泵 |
+| Sunny | Warm white, gentle fade-in | No mist; do not water merely because someone looks happy |
+| Cloudy | Dim cool white, revealing the light-gray shell | No mist |
+| Rainy | Dim cool white with side lighting beneath the cloud | Initial trial: mist for 2 seconds, then pause for at least 60 seconds; adjust from measurements |
+| Recovery | Slowly warm the light over about 20 seconds | Stop misting |
+| Stop / low water | Gentle status indication | Turn off misting and pump |
 
-RGB 灯无法产生灰色光；靠浅灰外壳、低亮度和环境光形成阴天观感。现有 RGB 灯带混合白色的观感先实测。
+RGB LEDs cannot emit gray light; use the light-gray shell, low brightness, and ambient lighting to create an overcast appearance. Physically test the appearance of white mixed by the existing RGB strip first.
 
-表情线索连续稳定约 3 秒才切换，状态至少保持 20 秒；无脸或低置信度回到安静待机。按钮手动操作优先于自动识别。
+Require facial cues to remain stable for about 3 seconds before changing state, and hold each state for at least 20 seconds. Return to quiet standby when no face is detected or confidence is low. Manual button input takes precedence over automatic recognition.
 
-## 5. 两条独立水路
+## 5. Two Independent Water Circuits
 
-水路 A：云内小水盒 → 配套雾化组件 → 短导流出口 → 植物周围。雾化水量也要计入盆栽累计受水量；土壤过湿时禁止继续出雾，保留雨天灯效。
+Circuit A: small reservoir inside the cloud → matched misting assembly → short outlet shroud → area around the plant. Include mist water in the plant's cumulative water intake. Disable further misting when soil is too wet, while retaining the rainy lighting effect.
 
-水路 B：底座水箱 → 微型蠕动泵 → 支架内软管 → 盆土上方滴水嘴。出水口不浸入土壤或积水，检查停泵后是否仍滴水。蠕动泵以实测流量标定，每次补水后等待再评估，不按情绪重复触发。
+Circuit B: base reservoir → miniature peristaltic pump → tubing inside the support → drip outlet above the soil. Do not immerse the outlet in soil or standing water; check whether dripping continues after the pump stops. Calibrate the peristaltic pump using measured flow. Wait and reassess after each watering event; do not repeatedly trigger watering from facial expressions.
 
-第一阶段只做人工触发定量补水，先收集到量杯，校准毫升/秒，确认后再接植物。第二阶段再加入土壤湿度与每日补水上限；上限由植物、盆土和实测耗水决定。
+Stage one uses only manually triggered measured watering. Collect water in a measuring cup first, calibrate mL/second, and connect it to the plant only after confirmation. Add soil-moisture sensing and a daily watering limit in stage two. Set the limit according to the plant, potting mix, and measured water consumption.
 
-## 6. 补充采购清单（选型条件，不是已核实的商品订单）
+## 6. Additional Purchase List (Selection Criteria, Not Verified Product Orders)
 
-| 项目 | 数量 | 选型要求 |
+| Item | Quantity | Selection requirements |
 |---|---:|---|
-| 5V 雾化组件 | 1 套 | 雾化片、驱动、供水结构配套；明确持续使能控制方式，优先带缺水停机；避免仅能按键循环切换的 USB 小加湿器 |
-| 缺水检测 | 每水箱 1 个 | 与水箱匹配的浮球/液位检测；雾化组件自带可靠保护时可合并 |
-| 微型蠕动泵 | 1 | 额定电压、电流、流量明确；配泵管、接头、滴水嘴 |
-| 3.3V 兼容 MOSFET 驱动模块 | 按负载需要 | 泵驱动带续流保护；雾化优先控制其 EN，不任意切换压电片线路 |
-| SN74AHCT125 电平转换模块 | 1 | 用于 3.3V 控制信号到灯带数据输入；与灯带实际数据要求匹配 |
-| 12V 稳压适配器 | 1 | 仅在确认灯带确为 12V 后购买；总功率按灯带、泵、降压损耗和启动电流核算 |
-| 12V→5V DC-DC 降压模块 | 1 或分路 | 按摄像头、控制板、雾化组件最大总电流留余量，安装后测输出 |
-| 按钮、总开关、保险丝、接线端子、电容/电阻、线材 | 1 批 | 保险丝与导线规格按负载计算，电容耐压高于所在电源轨；大电流负载不走面包板 |
-| 水盒、软管、接水盘、支架及外壳材料 | 1 批 | 可拆洗，固定可靠，开孔便于维护 |
-| 电容式土壤湿度探头 | 第二阶段 1 | 明确输出范围，针对所用盆土校准，电子部分保持干燥 |
-| ADS1115 ADC 模块 | 第二阶段 1 | 3.3V 供电，经 I²C 连接 ESP8266；探头输出须处于 ADC 允许范围 |
+| 5V misting assembly | 1 set | Matched misting disc, driver, and water-supply structure; documented continuous-enable control, preferably with low-water shutdown; avoid small USB humidifiers that can only cycle modes through a button |
+| Low-water detection | 1 per reservoir | Float or level sensor matched to the reservoir; may be combined with reliable built-in misting protection |
+| Miniature peristaltic pump | 1 | Documented rated voltage, current, and flow; include pump tubing, fittings, and drip outlet |
+| 3.3V-compatible MOSFET driver module | As required by loads | Pump driver needs flyback protection; preferably control the misting module's EN rather than arbitrarily switching the piezoelectric-disc wiring |
+| SN74AHCT125 level-shifter module | 1 | Convert 3.3V control signals to the strip's data input level; match the strip's actual data requirements |
+| Regulated 12V adapter | 1 | Buy only after confirming the strip is 12V; size total power for the strip, pump, buck-converter losses, and startup current |
+| 12V→5V DC-DC buck converter | 1 or separate branches | Allow margin above the maximum combined current of the camera, controller, and misting assembly; measure output after installation |
+| Buttons, master switch, fuse, terminals, capacitors/resistors, wires | 1 batch | Size fuse and wires for the load; capacitor voltage ratings must exceed their supply rail; do not route high-current loads through a breadboard |
+| Reservoirs, tubing, catch tray, support, and shell materials | 1 batch | Removable for cleaning, securely mounted, with serviceable openings |
+| Capacitive soil-moisture probe | 1 in stage two | Documented output range; calibrate for the actual potting mix and keep electronics dry |
+| ADS1115 ADC module | 1 in stage two | 3.3V supply and I²C connection to ESP8266; probe output must remain within the ADC's allowed range |
 
-ESP8266 不同 NodeMCU 克隆板的 A0 输入范围不完全一致，湿度探头不能未经核对直接接 A0。可采用上述外置 ADC 避免依赖板载分压配置。
+A0 input ranges differ among ESP8266 NodeMCU clones. Do not connect a moisture probe directly to A0 without checking. The external ADC above can avoid reliance on the board's voltage-divider configuration.
 
-## 7. 电源与接线边界
+## 7. Power and Wiring Boundaries
 
-确认 12V 灯带后，12V 电源分一路到灯带，另一路经降压到 5V 负载。若水泵选 12V，可单独从 12V 分支供电；若选 5V，则计入 5V 分支负载。逻辑与非隔离驱动共地。
+After confirming the 12V strip, split the 12V supply into one strip branch and another branch stepped down for 5V loads. A 12V pump may use its own 12V branch; include a 5V pump in the 5V branch load instead. Logic and non-isolated drivers share ground.
 
-- 控制板仅驱动信号，不能用 GPIO 或板载稳压器带泵、灯带和雾化器。
-- 不把外部 5V 与 USB 5V 无保护并联；烧录时断开外部板供电，或采用经核实的电源隔离方案。
-- 泵与雾化使能需要硬件默认关闭，启动和重启阶段不能误触发。避免 ESP8266 启动绑带引脚作为关键负载控制。
-- 暂不规定 GPIO 接线表：需确认开发板实物、灯带焊盘和雾化模块接口后确定；第二阶段为 I²C 预留引脚。
-- 12V 灯带可能按三颗灯一组控制；30 颗物理灯不一定是 30 个可寻址像素。通过实物与逐像素测试确认。
+- The controller supplies signals only. Do not drive a pump, LED strip, or misting assembly from GPIO or the board's regulator.
+- Do not parallel external 5V and USB 5V without protection. Disconnect external board power when programming, or use a verified power-isolation arrangement.
+- Pump and misting enables need a hardware-default-off state and must not activate during startup or reset. Avoid ESP8266 boot-strapping pins for critical load controls.
+- No GPIO wiring table is specified yet: confirm the physical development board, strip pads, and misting interface first. Reserve I²C pins for stage two.
+- A 12V strip may control three LEDs as one group. Thirty physical LEDs do not necessarily mean thirty addressable pixels. Confirm through inspection and a pixel-by-pixel test.
 
-## 8. 制作顺序与通过条件
+## 8. Build Sequence and Pass Criteria
 
-1. 清点与上电：拍清板型、灯带焊盘、马达标签；万用表确认各电源轨。每个负载先单独测试。
-2. 天气灯：按钮切换晴/阴/雨，低亮度起步；连续运行 30 分钟，无重启、闪烁或异常发热。
-3. 单独雾效实验：在远离电脑的接水盘上测试 10 个短喷周期；记录可见度、冷凝位置、实际耗水、外飘情况和缺水停机。通过后才定云壳孔位。
-4. 滴灌：量杯标定流量并重复 5 次；断电后无持续漏水，重启不自动泵水。接入植物前确认滴水点和接水盘。
-5. 结构整合：装入云朵、支架和底座，验证加水、拆洗、重心与走线；重复灯、雾、泵组合测试。
-6. 电脑联动：先手动发送命令，再加入表情线索识别。人工切换可随时覆盖识别。
-7. 故障检查：断网、拔摄像头、重启、缺水时关闭水路。控制板本地限时停止，不能依赖电脑发送停止指令。网络重试不重复执行同一浇水命令。
+1. Inventory and power-up: photograph the board model, strip pads, and motor label clearly; verify each supply rail with a multimeter. Test every load separately first.
+2. Weather lighting: switch sunny/cloudy/rainy with buttons, starting at low brightness. Run continuously for 30 minutes without resets, flicker, or abnormal heat.
+3. Standalone mist experiment: test 10 short mist cycles over a catch tray away from the computer. Record visibility, condensation locations, actual water consumption, drifting, and low-water shutdown. Define shell openings only after this passes.
+4. Drip irrigation: calibrate flow in a measuring cup and repeat five times. Verify no continuous leakage after power-off and no automatic pumping after restart. Confirm the drip location and catch tray before connecting a plant.
+5. Structural integration: install the cloud, support, and base; verify refilling, disassembly and cleaning, center of gravity, and wire routing. Repeat combined light, mist, and pump tests.
+6. Computer integration: send commands manually first, then add facial-cue recognition. Manual switching must override recognition at any time.
+7. Fault checks: shut down water circuits on network loss, camera disconnection, restart, and low water. Enforce local time limits on the controller rather than relying on a stop command from the computer. Network retries must not repeat the same watering command.
 
-预计安排：约 6–8 个制作时段，每段约半天到一天，取决于焊接经验、模块到货、外壳加工和雾效试验；不是交付承诺。
+Estimated schedule: about 6–8 build sessions, each roughly half a day to a full day, depending on soldering experience, module arrivals, shell fabrication, and mist experiments. This is not a delivery commitment.
 
-V0.1 验收：能稳定演示天气变化、真实短时出雾、人工定量滴灌、电脑表情触发与手动停止。自动植物养护在传感器校准后加入；马达动作放在后续版本。
+V0.1 acceptance: reliably demonstrate weather changes, real short-duration mist, manually triggered measured drip irrigation, computer facial-expression triggering, and manual stop. Add automatic plant care after sensor calibration; leave motor movement for a later version.
 
-## 9. 参考资料
+## 9. References
 
-- Espressif 官方摄像头驱动：https://github.com/espressif/esp32-camera
-- Espressif CameraWebServer 示例：https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/Camera/CameraWebServer/CameraWebServer.ino
-- WLED 接线与电平转换指南：https://kno.wled.ge/basics/wiring-guides/
-- DFRobot 电容式土壤湿度探头与校准：https://wiki.dfrobot.com/sen0193/
+- Espressif official camera driver: https://github.com/espressif/esp32-camera
+- Espressif CameraWebServer example: https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/Camera/CameraWebServer/CameraWebServer.ino
+- WLED wiring and level-shifting guide: https://kno.wled.ge/basics/wiring-guides/
+- DFRobot capacitive soil-moisture probe and calibration: https://wiki.dfrobot.com/sen0193/

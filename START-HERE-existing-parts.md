@@ -1,39 +1,38 @@
-# cloud_bot：只用现有零件启动
+# cloud_bot: Start with the Existing Parts Only
 
-本版验证拍摄、设备通信与天气互动。天气动画在电脑或手机屏幕上。电脑表情联动的启动方法见[软件 v2 说明](EMOTION-CONTROL-README.md)。
+This version validates image capture, device communication, and weather interaction. Weather animations appear on a computer or phone screen. For computer-based facial-expression control, see the [software v2 guide](EMOTION-CONTROL-README.md).
 
-## 只需要
+## What You Need
 
-- ESP32-CAM 和 MB 底座。
-- 支持数据传输的 Micro-USB 线、电脑。
+- ESP32-CAM and MB baseboard.
+- A data-capable Micro-USB cable and a computer.
 
-不需要 ESP8266 或外部接线。12V 灯带暂不连接，蓝色触摸模块待型号确认后再加入。若现有线仅能充电，需要换用已有的数据线才能烧录。
+No ESP8266 or external wiring is required. Leave the 12V LED strip disconnected for now; add the blue touch module only after confirming its model. If the existing cable is charging-only, use an available data cable to upload firmware.
 
-## 操作
+## Steps
 
-1. 断电，把 ESP32-CAM 插到 MB 底座上，对应两板的 5V、GND 等引脚位置，不能反插或错开一排。取下 SD 卡，暂不连接其他组件。
-2. 用 USB 数据线连接电脑，板底不要接触金属，放在平整的非导电支撑面上。
-3. Arduino IDE 的开发板管理器安装 Espressif Systems 的 esp32 支持包（代码面向 3.x），选 AI Thinker ESP32-CAM 和实际串口。不需要另装 FastLED 等库。没有串口时检查数据线及 CH340 对应串口驱动。
-4. 打开 firmware/cloud_bot_existing_parts/cloud_bot_existing_parts.ino，先验证编译，再上传，上传时关闭串口监视器。
-5. 若一直停在 Connecting，尝试按住底座 IO0，按下并松开 RST，然后松开 IO0，再上传。上传后不按 IO0，按 RST 正常启动。此方法适用于照片中常见 IO0/RST 底座；若按键行为不同，按底座说明处理。
-6. 打开 115200 波特率串口监视器查看日志。
-7. 电脑或手机连接设备 Wi-Fi：名称 cloud_bot，密码 set-a-local-password。热点不提供互联网，出现无互联网提示时选择保持连接。
-8. 浏览器地址栏打开 http://192.168.4.1 （若日志打印其他地址，以日志为准），无需 HTTPS。
-9. 点击晴天、阴天、下雨观察云朵变化。开启预览后约每秒拍摄一张，点击停止预览暂停取景。
+1. With power disconnected, seat the ESP32-CAM on the MB baseboard, matching the 5V, GND, and other pin positions on both boards. Do not reverse it or offset it by a row. Remove the SD card and leave other components disconnected.
+2. Connect to the computer with a USB data cable. Keep the underside away from metal and place the board on a flat, nonconductive support.
+3. In Arduino IDE's Boards Manager, install the esp32 package from Espressif Systems (the code targets 3.x). Select AI Thinker ESP32-CAM and the actual serial port. No additional libraries such as FastLED are needed. If no port appears, check the data cable and the appropriate CH340 serial driver.
+4. Open firmware/cloud_bot_existing_parts/cloud_bot_existing_parts.ino, verify compilation, then upload. Close Serial Monitor during upload.
+5. If upload remains at Connecting, try holding the baseboard's IO0 button, pressing and releasing RST, then releasing IO0 before uploading again. After upload, press RST without holding IO0 to boot normally. This applies to the common IO0/RST baseboard shown in the photos; follow the baseboard's instructions if its buttons behave differently.
+6. Open Serial Monitor at 115200 baud to view logs.
+7. Connect the computer or phone to the device Wi-Fi: network cloud_bot, password set-a-local-password. The hotspot has no internet access; choose to stay connected when warned.
+8. Open http://192.168.4.1 in the browser address bar (use the logged address if different). HTTPS is not required.
+9. Click the sunny, cloudy, and rainy controls to observe the cloud changing. Starting preview captures roughly one image per second; stopping preview pauses image requests.
 
-电脑没有 Wi-Fi 时可用手机连接设备热点，USB 仍由电脑供电。停止预览不再请求照片，但摄像头仍保持初始化；拔掉 USB 才完全断电。程序不保存照片、不上传云端。
+If the computer has no Wi-Fi, connect a phone to the device hotspot while the computer continues supplying USB power. Stopping preview stops new photo requests, but the camera remains initialized. Unplug USB to turn it off completely. The program does not save photos or upload them to the cloud.
 
-## 验证与故障
+## Verification and Troubleshooting
 
-- 看到热点、打开页面、切换天气，串口出现相应 Weather 消息。
-- 开启预览看到画面，停止后不再请求新照片。
-- 摄像头初始化失败时天气按钮仍可用；看串口错误，排查板型、排线与供电。
-- 重启后回到阴天，取景默认关闭。
+- Confirm the hotspot appears, the page opens, and weather switching produces corresponding Weather messages in the serial log.
+- Confirm preview displays an image and stopping it stops requests for new photos.
+- Weather buttons remain usable if camera initialization fails. Inspect the serial error and check the board model, ribbon cable, and power supply.
+- After a restart, weather returns to cloudy and preview is off by default.
 
-已在 AI Thinker ESP32-CAM 上验证 v2 固件的编译、烧录与网页功能，详见[软件验证记录](SOFTWARE-VALIDATION.md)。若报错，保留错误全文。若反复重启，先检查 USB 线与供电。
+Compilation, upload, and web functionality of the v2 firmware have been verified on an AI Thinker ESP32-CAM; see the [software validation record](SOFTWARE-VALIDATION.md). Preserve the complete error message if a problem occurs. For repeated resets, check the USB cable and power first.
 
-下一阶段验证实体云壳、灯带、雾化和滴灌。
+The next stage is to validate the physical cloud shell, LED strip, misting, and drip irrigation.
 
-摄像头引脚与初始化参考 Espressif 官方 CameraWebServer 示例：
+Camera pin assignments and initialization follow Espressif's official CameraWebServer example:
 https://github.com/espressif/arduino-esp32/tree/master/libraries/ESP32/examples/Camera/CameraWebServer
-

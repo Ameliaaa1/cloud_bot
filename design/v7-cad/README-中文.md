@@ -1,97 +1,99 @@
-# Cloud Bot V7：双插杆概念装配
+# Cloud Bot V7: Dual-Stake Concept Assembly
 
-这是可编辑的空间与结构原型，不是已验证可直接通水的生产图。
+This is an editable spatial and structural prototype, not a validated production design ready for water use.
 
-## 尺寸与布局
+## Dimensions and Layout
 
-- 云外观目标宽约 140 mm，骨架椭圆 130 × 86 mm；柔性外罩用独立的球面包络表达，非实心打印件。
-- 花盆参考外径 120 mm、高 110 mm；土面位于 Z=0，盆口 Z=10。花盆不是需要制造的零件。
-- 两根承力插杆直径 3 mm、长 145 mm、中心距 52 mm；参考入土深度 55 mm。银色装饰枝另建为可编辑扫掠曲线。
-- 承载架底面 Z=90 mm；云内前方为水箱、后方为控制板托盘，两者之间设置挡水板。
-- 水箱外形 36 × 22 × 22 mm，内腔约 11.9 mL，暂按 10 mL 工作容量留余量。续航取决于最终雾化器实测流量与工作占空比。
-- 雾化器用直径 16 mm、厚 2 mm 占位。此处仅预留位置，不能据此购买或认定适配。
-- ESP32-CAM 用 40 × 27 × 10 mm 简化占位，竖向放置、镜头朝前，未包含全部插针、供电插头和线束。外罩开孔需要下一轮按实物细化。
-- 左右灯带托板各 14 × 50 mm；实际灯带裁剪单元长度必须实测，不能任意剪到 50 mm。
+- Target cloud width: approximately 140 mm, with a 130 × 86 mm elliptical frame. The flexible cover is represented by a separate spherical envelope, not a solid printable part.
+- Reference flowerpot: 120 mm outer diameter and 110 mm tall. Soil level is Z=0; the rim is Z=10. The flowerpot is not a part to manufacture.
+- Two load-bearing stakes: 3 mm diameter, 145 mm long, 52 mm center spacing; reference insertion depth into soil is 55 mm. The silver decorative branches are separate editable swept curves.
+- Chassis underside: Z=90 mm. The tank sits at the front inside the cloud, and the control-board tray at the rear, with a splash barrier between them.
+- Tank exterior: 36 × 22 × 22 mm; internal cavity approximately 11.9 mL. A provisional 10 mL working capacity leaves headroom. Runtime depends on the final atomizer's measured flow rate and duty cycle.
+- Atomizer placeholder: 16 mm diameter and 2 mm thick. This only reserves space; do not use it as a purchasing specification or proof of fit.
+- ESP32-CAM placeholder: a simplified 40 × 27 × 10 mm shape, upright with the lens facing forward. It does not include all pins, power connectors, or wiring. Cover openings must be refined against the actual hardware in the next iteration.
+- Left and right LED-strip supports: 14 × 50 mm each. Measure the strip's actual cut-segment length; do not arbitrarily cut it to 50 mm.
 
-## 打开与编辑
+## Opening and Editing
 
-使用 Fusion 打开 `CloudBot-V7.f3d`。原生文件包含按零件分组的组件，以及草图、拉伸、切除和扫掠历史。
+Open `CloudBot-V7.f3d` in Fusion. The native file contains components grouped by part, plus sketch, extrusion, cut, and sweep history.
 
-隐藏或显示 `90 Cloud soft cover ENVELOPE` 可以切换外观包络与内部结构；`91 Flowerpot reference` 控制参考花盆。
+Toggle `90 Cloud soft cover ENVELOPE` to switch between the external envelope and internal structure; `91 Flowerpot reference` controls the reference flowerpot.
 
-草图中编辑轮廓，时间轴中编辑拉伸/平面/扫掠。用户参数目前是尺寸说明，并未驱动全部坐标；整体重新布局可以修改 `../fusion/CloudBotV7/CloudBotV7.py` 后生成新文档。不要误认为修改 cloud_width 会同步缩放整机。
+Edit profiles in sketches and extrusions, planes, and sweeps in the timeline. User parameters currently document dimensions but do not drive every coordinate. To change the overall layout, modify `../fusion/CloudBotV7/CloudBotV7.py` and generate a new document. Do not assume that changing cloud_width scales the entire assembly.
 
-`CloudBot-V7.step` 用于跨软件交换；它不保留原始草图与建模历史。软外罩和参考花盆也是实体包络，不能当成待打印件。第一版试打使用单件或排盘 STL，排盘集中放置 9 个独立试装件。
+`CloudBot-V7.step` is for exchange between CAD applications; it does not preserve the original sketches or modeling history. The soft cover and reference flowerpot are also solid envelopes, not parts to print. The first print uses individual or plate-layout STL files; the plate contains 9 separate fit-test parts.
 
-## 装配方案
+## Assembly Plan
 
-1. 两根不锈钢插杆进入承载架下方插孔；0.4 mm 直径间隙为初始设定，锁定方式需打样确认。
-2. 云骨架通过四个 M2 通孔对齐承载架；螺钉和螺母需按打印件实际厚度选择。
-3. 灯带托架的中央短脚搭在云骨架横梁上，V7 没有为短脚设置固定结构。托架两端的槽用于固定灯带。LED 与纤维外罩之间需要实测温升与扩散效果。
-4. 水箱、盖、软密封垫、加水塞、出雾座和两侧保持架分别建模。现阶段保持架锁定及压紧力、出雾头密封、驱动板固定尚未验证，禁止直接作为防漏水结构使用。
-5. 所有湿部件需在离开电脑的条件下单独试漏；外罩不能覆盖出雾口。电源线沿后插杆引出。
+1. Insert the two stainless-steel stakes into the sockets beneath the chassis. The 0.4 mm diametral clearance is an initial setting; the locking method requires prototyping.
+2. Align the cloud frame with the chassis using the four M2 through-holes. Select screws and nuts for the actual printed-part thickness.
+3. The LED-strip supports' short central feet rest on the cloud frame's crossbeam. V7 has no fastening feature for these feet. The slots at the ends secure the strips. Measure temperature rise and light diffusion between the LEDs and the fiber cover.
+4. The tank, lid, soft gasket, fill plug, mist-head mount, and two side retainers are modeled separately. Retainer locking and clamping force, mist-head sealing, and driver-board mounting have not been verified. Do not use this directly as a leakproof structure.
+5. Leak-test all wet components separately, away from computers. Do not cover the mist outlet with the outer cover. Route the power cable along the rear stake.
 
-## 第一版实物试打记录
+<a id="第一版实物试打记录"></a>
 
-![Cloud Bot 第一版打印实物，展示底板、两侧灯带托架、摄像头托盘和水箱样件](first-print-prototype.jpg)
+## First Physical Print Record
 
-本记录整理于 2026-11-13。照片由项目作者提供，展示 V7 结构的第一版打印实物，可见水箱样件和空的摄像头托盘。下表中的卡扣、螺丝孔与支撑问题来自试装反馈，具体位置待用实物逐一标注。
+![First Cloud Bot print showing the chassis, side LED-strip supports, camera tray, and tank samples](first-print-prototype.jpg)
 
-### 第一版打印 STL
+This record was compiled on 2026-11-13. The project author supplied the photo, showing the first physical print of the V7 structure, including tank samples and an empty camera tray. The snap-fit, screw-hole, and support-removal issues below come from fit-test feedback; their exact locations still need to be marked individually on the physical parts.
 
-| 文件 | 内容 |
+### First-Print STL Files
+
+| File | Contents |
 | --- | --- |
-| [第一版单件 STL（9 个文件）](first-print-stl/parts/) | 承载架、左右灯带托架、摄像头托盘、水箱、箱盖、出雾座及左右保持架，可逐件下载。 |
-| [第一版整盘 STL（cbv7_all.stl）](first-print-stl/cbv7_all.stl) | 同批 9 个试装件的原始排盘，约 181.7 × 106.7 mm。 |
+| [Individual first-print STL files (9 files)](first-print-stl/parts/) | Chassis, left and right LED-strip supports, camera tray, tank, lid, mist-head mount, and left and right retainers; downloadable individually. |
+| [Complete first-print plate STL (cbv7_all.stl)](first-print-stl/cbv7_all.stl) | Original layout of the same 9 fit-test parts, approximately 181.7 × 106.7 mm. |
 
-这 10 个文件均从第一版打印 ZIP 原样提取，并与原打印目录逐字节核对。导入切片软件时使用毫米、100% 比例。水箱、箱盖、出雾座和保持架用于干式试装。
+All 10 files were extracted unchanged from the first-print ZIP and checked byte-for-byte against the original print directory. Import into the slicer in millimeters at 100% scale. The tank, lid, mist-head mount, and retainers are for dry fit testing.
 
-### 实物试装反馈
+### Physical Fit-Test Feedback
 
-| 实物遇到的问题 | 下次改模要验证的事 |
+| Issue observed | What to verify in the next model revision |
 | --- | --- |
-| 打印支撑很难拆。 | 检查打印朝向和悬空面，优先让零件少用支撑。确实需要支撑的位置要留出工具伸进去的空间，避免把支撑困在槽内或夹层里。 |
-| 有几处卡扣装不上。 | 逐处检查装入方向、卡扣变形空间和打印公差。先做小样，确认能卡到位，且需要拆卸的卡扣能正常松开。 |
-| 有些螺丝孔的位置不合理。 | 按装配顺序检查孔位、对齐和螺丝刀空间。需要螺母的位置也要能放入和固定螺母。 |
-| 有些零件可以一体打印，拆件太多。 | 优先合并无需拆卸且能顺利打印的相邻件。加水、清洁或维修需要拆开的接口保留，合并后检查是否增加难拆的支撑。 |
+| Printed supports were difficult to remove. | Review print orientation and overhangs; prioritize designs needing less support. Where support is necessary, allow tool access and avoid trapping it in slots or between layers. |
+| Several snap-fits would not engage. | Check insertion direction, space for latch deflection, and printing tolerances individually. Print small test pieces first to confirm engagement and, where removal is required, release. |
+| Some screw holes were poorly positioned. | Check hole placement, alignment, and screwdriver clearance in assembly order. Nuts must also be accessible for insertion and retention where needed. |
+| Some parts could be printed together; there were too many separate pieces. | Prioritize combining adjacent parts that need not be removed and can print successfully as one piece. Keep interfaces needed for filling, cleaning, or repair detachable, and check whether combining parts creates hard-to-remove supports. |
 
-### 出雾座和承载板
+### Mist-Head Mount and Chassis Plate
 
-- `07_mist_mount_DRY.stl` 对应 CAD 组件 `09 Mist head mount`。大圆环贴在 `01 Chassis` 承载板下方，小圆环朝下，两件的孔对齐。出雾座的大端外径 22 mm，板上通孔直径 16 mm。V7 没有在这个接口做卡扣、螺丝或压配结构，现件只能临时定位做干式试装。
-- 实物反馈：出雾座台阶附近的打印支撑难拆。若用原 STL 再试打，将大端平面贴打印平台，预览内圈台阶是否仍需支撑。下一版优先评估把承载板的出雾通道合成一体，并用斜面替代难拆支撑的台阶。按实际雾化模块确定可拆固定和密封方式后，再验证能否通水。
+- `07_mist_mount_DRY.stl` corresponds to CAD component `09 Mist head mount`. Its large ring sits against the underside of the `01 Chassis` plate, with the small ring facing down and the holes aligned. The mount's large end has a 22 mm outer diameter; the plate through-hole is 16 mm in diameter. V7 has no snap-fit, screw, or press-fit feature at this interface, so the current parts can only be temporarily positioned for dry fit testing.
+- Physical feedback: supports near the mount's step were difficult to remove. If reprinting the original STL, place the large flat end against the print bed and preview whether the inner-ring step still needs support. For the next revision, prioritize integrating the mist passage into the chassis plate and replacing the difficult-to-support step with a slope. Define removable fastening and sealing around the actual atomizer module before validating water use.
 
-### 水箱出口与装配复查
+### Tank Outlet and Assembly Review
 
-按装配坐标复核 STEP 中的圆柱面，再沿孔轴检查第一版单件 STL 和整盘 STL。水箱底部 Ø6 mm 孔与承载板 Ø16 mm 孔的中心都在 X=0、Y=−17 mm，两个孔分别贯穿 1.5 mm 箱底和 2.4 mm 承载板。空的出雾座也有贯通出口。第一版照片为俯视，实物底面的通孔须在拆下出雾座后从底面核对。若孔仍不可见，检查当时使用的 STL 和切片层，确认是否有支撑堵住孔。
+The STEP cylindrical surfaces were reviewed at their assembly coordinates, then the individual and complete first-print STL files were inspected along the hole axes. The tank's Ø6 mm bottom hole and the chassis plate's Ø16 mm hole are both centered at X=0, Y=−17 mm. They pass through the 1.5 mm tank floor and 2.4 mm chassis plate, respectively. The empty mist-head mount also has a through-outlet. The first-print photo is a top view; verify the physical underside opening from below after removing the mist-head mount. If the hole is still not visible, check the STL and sliced layers used for that print for support material blocking it.
 
-| 接口 | 复查结果与待修项 |
+| Interface | Review findings and outstanding changes |
 | --- | --- |
-| 水箱 → 承载板 → 出雾座 | CAD 中的雾化片占位是实心圆片，会挡住沿孔轴的直视线。真正的供水、出雾和密封接口仍需按选定模块设计。箱底与板顶之间有 0.4 mm 间隙，出雾座也没有固定，应一起解决定位和密封。 |
-| 箱盖和左右保持架 | 保持架两脚在承载板顶面结束，没有与底板锁紧的结构，无法提供可靠的密封压紧力。 |
-| 云骨架紧固 | 承载板上四个 M2 通孔存在，CAD 中与云骨架孔同轴。骨架不在 V7 打印包中。装配时螺丝刀、螺母是否能进出还需用实物验证。 |
-| 灯带托架与骨架横梁 | 托架中央短脚只与横梁顶面接触，未设计卡扣或螺丝固定。下方每侧两个 Ø2.4 mm 孔用于 M2 螺丝连接骨架耳片与底板。下版若保留打印骨架，优先评估将短脚和托架并入骨架横梁，同时留出螺丝操作空间。 |
-| 摄像头托盘 | `04_camera_cradle.stl` 仍是矮托盘，Fusion 居于后侧的竖装靠板未包含在该 STL 中。下次应从同一个批准的装配版本导出并对照。 |
-| 摄像头托盘扎带槽 | 托盘上的两条槽贯穿托盘，但槽下方的 `01_chassis.stl` 承载板是实的。两层之间仅 0.4 mm；先穿扎带仍可能顶高托盘。改版删除底部槽，把固定点改到两侧可操作的位置，并验证托盘装好后仍能穿带、拉紧和拆除，且扎带不压镜头排线或插头。 |
-| 两根插杆 | 承载架底部两孔均有 12 mm 盲孔深度。后加的打印插杆在 3 mm 插头延伸至 10 mm 后开始变宽，插入深度还取决于过渡段和打印误差。插杆的防拔固定未验证。 |
+| Tank → chassis plate → mist-head mount | The CAD atomizer placeholder is a solid disk that blocks a direct view along the hole axis. Actual water-feed, mist-outlet, and sealing interfaces still need to be designed for the selected module. There is a 0.4 mm gap between the tank floor and plate top, and the mount is not fastened; positioning and sealing must be resolved together. |
+| Tank lid and side retainers | The retainers' feet end at the chassis plate's top surface, with no locking connection to the plate, so they cannot provide reliable sealing pressure. |
+| Cloud-frame fastening | The four M2 through-holes in the chassis plate exist and are coaxial with the frame holes in CAD. The frame is not included in the V7 print package. Physical tests must still confirm screwdriver and nut access during assembly. |
+| LED-strip supports and frame crossbeam | The supports' short central feet only contact the crossbeam's top surface; no snap-fit or screw fastening is designed. The two Ø2.4 mm holes beneath each side are for M2 screws joining the frame tabs to the chassis. If retaining the printed frame in the next revision, prioritize integrating the short feet and strip supports into the crossbeam while preserving screw access. |
+| Camera tray | `04_camera_cradle.stl` is still a shallow tray; the upright rear backing plate in Fusion is not included in this STL. Export and compare parts from the same approved assembly version next time. |
+| Camera-tray cable-tie slots | Both slots pass through the tray, but the `01_chassis.stl` plate below them is solid. The gap is only 0.4 mm; even threading the ties first may lift the tray. Remove the bottom slots in the revision and move fastening points to accessible sides. Verify that ties can still be threaded, tightened, and removed after the tray is installed, without pressing on the lens ribbon cable or connectors. |
+| Two stakes | Both sockets under the chassis have a 12 mm blind-hole depth. The later-added printed stakes begin widening after their 3 mm tips extend 10 mm; insertion depth also depends on the transition and printing error. Pull-out retention has not been verified. |
 
-下一轮打包需核对零件清单，并用同一版本的 Fusion 装配和 STL 复查托盘、孔位及装配方向。
+For the next package, check the parts list and use the same Fusion assembly and STL version to review the tray, hole positions, and assembly orientations.
 
-下次发打印包前逐层预览水箱和底板，检查通孔是否被支撑堵住、支撑能否取出。用导出的零件逐个走一次装配顺序，核对孔位、工具空间、锁紧和拆卸路径，再用最小接口样件试装。通水需等真实雾化模块及密封结构确定后单独验证。
+Before sending the next print package, preview the tank and chassis layer by layer. Check that supports do not block through-holes and can be removed. Walk through the assembly sequence with the exported parts, checking hole alignment, tool access, locking, and removal paths; then test minimal interface samples. Water use requires separate validation after the actual atomizer module and sealing structure are defined.
 
-## 下一版榫卯装配方案
+## Next-Revision Interlocking Assembly Plan
 
-| 接口 | 建议结构 | 试装要点 |
+| Interface | Proposed structure | Fit-test checks |
 | --- | --- | --- |
-| 水箱与底板 | 底板一体打印前开口双滑轨，箱体沿轨滑到末端挡块，入口用可按开的卡舌防止退出。取消两个独立压架。 | 确认从前方能抽出水箱，推到底时水箱出口与底板出雾孔对齐。卡舌负责定位，箱盖另设压紧结构配密封垫。 |
-| 摄像头托盘与底板 | 托盘从后方插入浅滑轨，推到底由挡块定位，外侧留可按开的卡舌。摄像头固定点设在托盘侧面。 | 托盘装好后仍能接线、固定摄像头并解除卡舌。取消底部扎带槽。 |
-| 灯带托板与骨架 | 若保留打印骨架，优先将托板与横梁一体打印。若用手弯金属丝骨架，将托板并入底板的干区支架，样件验证灯带朝向与布线。 |
-| 出雾通道与底板 | 通道与底板一体成型，内壁用斜面过渡，取消独立的台阶圆环。雾化模块按实物设计可拆安装与密封。 | 检查切片中通道贯通，支撑能从外侧清除。 |
-| 承力插杆与底板 | 沿用可拔插的插孔，另做防拔定位试样。 | 加上云体和模拟满水配重后试拔、试晃，再决定锁定方式。 |
+| Tank and chassis | Print a pair of front-opening rails into the chassis. Slide the tank to an end stop, with a releasable latch at the entrance preventing withdrawal. Remove the two separate hold-down retainers. | Confirm the tank can be removed from the front and its outlet aligns with the chassis mist opening when fully inserted. The latch locates the tank; the lid needs separate clamping with a gasket. |
+| Camera tray and chassis | Insert the tray from the rear along shallow rails, locating it against an end stop with an externally accessible release latch. Put camera fastening points on the tray sides. | Wiring, camera fastening, and latch release must remain accessible with the tray installed. Remove the bottom cable-tie slots. |
+| LED-strip supports and frame | If retaining a printed frame, prioritize printing the supports and crossbeam as one piece. If using a hand-bent wire frame, integrate the supports into the chassis's dry-area bracket and use samples to verify strip orientation and wiring. | |
+| Mist passage and chassis | Integrate the passage into the chassis with sloped inner transitions, eliminating the separate stepped ring. Design removable atomizer mounting and sealing around the actual hardware. | Check that the sliced passage is open and support can be removed from outside. |
+| Load-bearing stakes and chassis | Retain removable sockets and make separate pull-out-retention test samples. | Test pull-out and wobble with the cloud assembly and a simulated full-water load before choosing the locking method. |
 
-滑轨与卡舌先打短段配合样件，试插、锁住和拆出后再定间隙。滑槽入口和释放位置应能从外侧操作，并在切片里逐层确认槽内没有难拆的支撑。
+Print short rail-and-latch mating samples first. Set clearances only after testing insertion, locking, and removal. Slot entrances and release points must be accessible from outside, and the sliced layers must be checked for trapped supports.
 
-## 下一轮需要实测
+## Measurements Needed in the Next Round
 
-[V8 装配说明](../v8-cad/组装与打印.md)记录了后续的一体底板与滑轨布局，[V8.1 打印与试装](../v8-1-cad/打印与试装.md)记录了双卡扣水箱盖的装配和检查步骤。
+The [V8 assembly guide](../v8-cad/组装与打印.md) documents the subsequent integrated chassis and rail layout. The [V8.1 printing and fit-test guide](../v8-1-cad/打印与试装.md) records assembly and inspection steps for the dual-latch tank lid.
 
-优先制作干式尺寸样件，使用约 10 g 配重模拟水，测试湿土中的倾倒、晃动、拔出和根系干涉。确定实际雾化器、驱动板、电源与灯带尺寸后，再完成紧固、防漏、线束、镜头朝向及可制造性设计。水雾主要用于氛围和少量湿润，不能据此承诺替代植物浇水。
+Prioritize dry dimensional samples and use approximately 10 g of ballast to simulate water. Test tipping, wobble, pull-out, and root interference in wet soil. After selecting and measuring the actual atomizer, driver board, power supply, and LED strip, complete fastening, leak prevention, wiring, lens orientation, and manufacturability design. Mist is primarily for atmosphere and light moistening; do not claim that it replaces watering plants.

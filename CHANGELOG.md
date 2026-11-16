@@ -2,24 +2,24 @@
 
 ## 2026-11-16
 
-- 收录 V8 滑轨式一体底板和 V8.1 双卡扣水箱盖的干式原型，包含 Fusion 模型、单件与整盘 STL、装配图、打印说明和检查报告。
-- 收录滑轨卡舌试样及 Fusion 脚本。现有 V8 和 V8.1 报告各记录 4 个打印实体，所列装配干涉为空。整机试装和水路密封待实测。
+- Added the V8 integrated sliding-rail base and V8.1 dual-latch tank-lid dry prototypes, including Fusion models, individual-part and full-plate STLs, assembly images, printing instructions, and inspection reports.
+- Added sliding-rail latch test pieces and Fusion scripts. Existing V8 and V8.1 reports each record four printable bodies and no listed assembly interference. Full assembly and watertightness still require physical testing.
 
 ## 2026-11-13
 
-- 收录 V7 首轮干式打印原件、实物照片和试装反馈，记录固定、支撑清理和摄像头托盘适配问题。
-- 发布表情联动 v2 和 ESP32-CAM 固件，支持独立微笑阈值、稳定等待时间、手动优先及自动信号中断回退。
+- Added original V7 first-round dry-print files, physical photographs, and trial-fit feedback, documenting fastening, support-removal, and camera-tray fit issues.
+- Released expression control v2 and ESP32-CAM firmware with an independent smile threshold, stability hold time, manual priority, and fallback when the automatic signal stops.
 
 ## 2026-11-12
 
-- 收录 V1–V7 概念图及 V7 双插杆结构原型：Fusion 原生文件、STEP 文件、装配与内部截图。
-- 收录 Fusion 生成脚本、结构说明及现有最终检查报告；报告记录 20 个组件、279 项建模历史，所列范围内最终干涉记录为空。
-- 表情联动实验增加可调置信度阈值（默认 0.30），同步首页进度与模型入口。
-- 模型仍为概念装配；未在此次发布中重新运行 Fusion、编译烧录或实物验证。
+- Added V1–V7 concept images and the V7 dual-rod structural prototype: native Fusion files, STEP files, assembly screenshots, and internal views.
+- Added the Fusion generation script, structural notes, and existing final inspection report. The report records 20 components, 279 modeling-history entries, and no final interference within the listed scope.
+- Added an adjustable confidence threshold (default 0.30) to the expression-control experiment, and updated the homepage progress and model links.
+- The model remained a concept assembly; this release did not rerun Fusion, compilation/flashing, or physical validation.
 
 ## 0.1.0 - 2026-10-27
 
-- 建立 cloud_bot 原型项目的可追踪 Git 基线。
-- 收录 ESP32-CAM 本地网页天气/摄像头原型。
-- 收录 12V WS2811 类灯带独立台架测试程序和接线说明。
-- 明确雾化、滴灌、表情识别、结构制造与实物验证仍属于后续阶段。
+- Established a traceable Git baseline for the cloud_bot prototype.
+- Added the local ESP32-CAM weather/camera web prototype.
+- Added the standalone 12V WS2811-type LED-strip bench-test program and wiring guide.
+- Identified misting, drip irrigation, expression recognition, structural fabrication, and physical validation as later phases.
