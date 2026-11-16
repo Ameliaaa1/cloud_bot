@@ -1,0 +1,10 @@
+{
+  "printable_solids": 4,
+  "seated_interferences": [],
+  "latch_side_gap_mm": 0.25,
+  "outlet_center_mm": [
+    -18,
+    0
+  ],
+  "plate_triangles": 2120
+}

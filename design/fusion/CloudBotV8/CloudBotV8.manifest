@@ -1,0 +1,10 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "script",
+  "id": "483083fd-1dad-4dd2-a579-f678fc580cbf",
+  "author": "CloudBot",
+  "description": {"": "Build and export the CloudBot V8 assembly."},
+  "version": "1.0.0",
+  "runOnStartup": false,
+  "supportedOS": "windows"
+}

@@ -1,0 +1,10 @@
+{
+  "autodeskProduct": "Fusion360",
+  "type": "script",
+  "id": "4154f7cf-c0cf-4b92-9166-94ed443024cc",
+  "author": "CloudBot",
+  "description": {"": "Build and export the CloudBot rail and latch fit coupon."},
+  "version": "1.0.0",
+  "runOnStartup": false,
+  "supportedOS": "windows"
+}
