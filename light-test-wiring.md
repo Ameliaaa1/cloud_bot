@@ -1,58 +1,58 @@
-# cloud_bot 第一阶段：现有 ESP32-CAM 灯光测试
+# cloud_bot Stage One: Lighting Test with the Existing ESP32-CAM
 
-## 已确认与待确认
+## Confirmed and Unconfirmed Details
 
-实物照片清晰显示灯带 12V、DI、DO、GND 和箭头。按外观是外置驱动芯片、三颗灯一组的 WS2811 类灯带，包装也写 WS2811。半米 30 灯先按 10 个可寻址组测试，实际由逐组点亮验证。芯片具体批次和 RGB 顺序未通过实物通电验证。
+Physical photos clearly show the strip's 12V, DI, DO, GND, and arrow markings. Its appearance suggests a WS2811-type strip with external driver chips and three LEDs per group; the packaging also says WS2811. Initially test the half-meter, 30-LED strip as 10 addressable groups, then verify by lighting each group individually. The exact chip revision and RGB order have not been verified by powering the physical strip.
 
-用户没有 ESP8266。此前双控制板方案是后续扩展选择，不是本次测试前提。本次使用已有 ESP32-CAM 与 ESP32-CAM-MB，不启用摄像头或 SD 卡；摄像头联动另行整合验证。
+The user does not have an ESP8266. The earlier dual-controller design is a later expansion option, not a prerequisite for this test. Use the existing ESP32-CAM and ESP32-CAM-MB without enabling the camera or SD card. Camera integration must be validated separately.
 
-## 本次补充物料
+## Additional Materials for This Test
 
-- 12V 直流稳压适配器：本段半米灯带可先选 12V/2A，并核对灯带额定功率不超过电源能力；不代表整机电源选型。
-- 配套电源插座转接线/螺丝端子，带合适分支保险保护。
-- SN74AHCT125 电平转换模块：须引出 5V/VCC、GND、A 输入、Y 输出和使能，或已正确固定使能。不要用常见的 I²C 双向电平转换小板替代。
-- 12V→5V 降压模块：本次仅给电平转换模块供电，先用万用表调至 5.0V。开发板仍由 MB 底座 USB 供电。
-- 330Ω 串联电阻、约 470–1000µF/25V 电解电容、100nF 去耦电容（模块已配可不另加）、线材和可靠接头。
-- Micro-USB 数据线、万用表。焊盘无连接线时需要焊接；不以裸杜邦头压在焊盘上通电。
+- Regulated 12V DC adapter: 12V/2A is an initial option for this half-meter section, provided its rated power does not exceed the supply's capacity. This is not a power-supply specification for the complete device.
+- Matching power-socket adapter cable or screw terminals, with appropriate branch fuse protection.
+- SN74AHCT125 level-shifter module: it must expose 5V/VCC, GND, A input, Y output, and enable, or have enable correctly fixed. Do not substitute a common bidirectional I²C level-shifter board.
+- 12V→5V buck converter: in this test it powers only the level-shifter module. Adjust to 5.0V with a multimeter first. The development board remains powered by USB through the MB baseboard.
+- 330Ω series resistor, approximately 470–1000µF/25V electrolytic capacitor, 100nF decoupling capacitor (not needed separately if included on the module), wires, and reliable connectors.
+- Micro-USB data cable and multimeter. Soldering is required if the pads have no attached wires. Do not power the strip by pressing bare jumper-pin ends against solder pads.
 
-## 接线表（全部断电后接线）
+## Wiring Table (Disconnect All Power Before Wiring)
 
-| 来源 | 去向 |
+| From | To |
 |---|---|
-| 12V 电源正极，经分支保护 | 灯带输入端 12V；降压模块 IN+ |
-| 12V 电源负极 | 灯带 GND；降压模块 IN- |
-| 降压模块 OUT+，已测为 5.0V | AHCT125 模块 VCC/5V |
-| 降压模块 OUT- | AHCT125 GND；ESP32-CAM GND |
-| ESP32-CAM 标注 IO13 的引脚 | AHCT125 的 1A（或所选通道 A） |
-| 同通道 1Y | 经 330Ω 电阻到灯带 DI |
-| 同通道 /1OE（低有效） | GND，若模块已固定使能则依其说明 |
-| 电脑 USB | ESP32-CAM-MB 的 Micro-USB |
+| 12V supply positive, through branch protection | Strip input 12V; buck-converter IN+ |
+| 12V supply negative | Strip GND; buck-converter IN- |
+| Buck-converter OUT+, measured at 5.0V | AHCT125 module VCC/5V |
+| Buck-converter OUT- | AHCT125 GND; ESP32-CAM GND |
+| ESP32-CAM pin marked IO13 | AHCT125 1A (or A of the selected channel) |
+| 1Y of the same channel | Through 330Ω resistor to strip DI |
+| /1OE of the same channel (active low) | GND; follow the module instructions if enable is already fixed |
+| Computer USB | ESP32-CAM-MB Micro-USB |
 
-把电解电容正极接灯带 12V、负极接灯带 GND，放在灯带输入附近。AHCT125 的 100nF 去耦接 VCC 与 GND。裸芯片或未处理闲置输入的模块需按厂家说明处理闲置输入，不能悬空；不熟悉时选已装配且接口清晰的模块。
+Connect the electrolytic capacitor's positive terminal to strip 12V and negative terminal to strip GND, close to the strip input. Connect the AHCT125's 100nF decoupling capacitor between VCC and GND. For a bare chip or module with untreated unused inputs, handle those inputs according to the manufacturer's instructions; do not leave them floating. If unfamiliar with this, choose an assembled module with clearly labeled connections.
 
-电源负极、控制板 GND、电平转换 GND 共地；两路 5V 正极不相连。绝不能把 12V 接到 ESP32-CAM 的 IO、5V 或 3V3。板上 VCC 含义未经核对，不使用该脚。
+The supply negative, controller GND, and level-shifter GND share ground. Do not connect the two 5V positive rails. Never connect 12V to ESP32-CAM IO, 5V, or 3V3. The meaning of the board's VCC pin has not been verified; do not use it.
 
-照片当前朝向：灯带底端可见三块已上锡的接点，对应左 12V、中 DI、右 GND；以上方文字标签为准，不按持拿方向猜。箭头从输入端指向灯带后续灯组。DO 是输出，不能作为控制信号输入。
+In the photo's current orientation, the three tinned pads at the bottom of the strip are left 12V, center DI, and right GND. Follow the printed labels above them rather than guessing from how the strip is held. Arrows point from the input toward subsequent LED groups. DO is an output and cannot serve as the control-signal input.
 
-GPIO13 不属于官方 AI Thinker 摄像头引脚映射，但与 microSD 共用。本次移除 SD 卡、保持 SD 未初始化。不要使用 GPIO4 驱动灯带，避免涉及板载强光闪光灯。后续相机+灯带同时运行仍需测试时序、供电和稳定性。
+GPIO13 is not part of the official AI Thinker camera pin mapping, but it is shared with microSD. Remove the SD card and leave SD uninitialized for this test. Do not use GPIO4 to drive the strip, to avoid involving the onboard bright flash LED. Running camera and strip together later still requires timing, power, and stability tests.
 
-## 上传与测试
+## Upload and Test
 
-1. 灯带 12V 保持断开。按两块板的引脚名称对应插接 MB 底座，确认方向，不能只按 USB 所在方向猜。用 USB 连接电脑。
-2. Arduino IDE 安装 Espressif 的 esp32 开发板支持和 FastLED 库，开发板先选 AI Thinker ESP32-CAM（与常见实物布局相符），选择对应串口。
-3. 打开 firmware/cloud_bot_light_test/cloud_bot_light_test.ino，验证编译并上传。若不能自动进入下载模式，按 MB 底座说明使用 IO0/RST；下载后恢复正常启动，IO0 不要一直接地。
-4. 断开全部电源，完成上述接线。核对电容极性、5V 降压输出、12V 与 GND 没有短路。
-5. 先给控制板 USB 供电，打开 115200 波特率串口监视器；程序默认发出全灭数据。再给灯带及电平转换模块的 12V 分支供电，发送 x。
-6. 依次发 1、2、3，核对红绿蓝。若顺序不符，只调整 addLeds 的 RGB 顺序参数（如 GRB、BRG），不要改电源线。
-7. 发 t，查看每次是否三颗灯一组、是否覆盖全部灯。若分组数量不符，修改 NUM_GROUPS。
-8. 发 s/c/r 切换晴天、阴天、雨天灯光，发 x 熄灭。此版本不会控制雾化器或水泵。
-9. 若灯不亮，断电检查 DI/DO、共地、电平转换使能和供电；不要先把亮度调满。若最末组受上电随机状态影响，重新发 x 或断电排查。
-10. 稳定点亮 30 分钟，观察温升、闪烁与重启；结束发送 x，先断灯带 12V，再断 USB。
+1. Keep strip 12V disconnected. Seat the boards on the MB baseboard by matching pin names and checking orientation; do not infer orientation solely from the USB connector. Connect USB to the computer.
+2. Install Espressif's esp32 board support and the FastLED library in Arduino IDE. Initially select AI Thinker ESP32-CAM (matching the common physical layout) and the correct serial port.
+3. Open firmware/cloud_bot_light_test/cloud_bot_light_test.ino, verify compilation, and upload. If it cannot enter download mode automatically, use IO0/RST as specified by the MB baseboard instructions. Restore normal boot afterward; do not leave IO0 grounded.
+4. Disconnect all power and complete the wiring above. Check capacitor polarity, 5V buck output, and absence of a short between 12V and GND.
+5. Power the controller through USB first and open Serial Monitor at 115200 baud. The program sends all-off data by default. Then power the 12V branch supplying the strip and level shifter, and send x.
+6. Send 1, 2, and 3 in sequence to check red, green, and blue. If the order is wrong, change only the RGB-order argument to addLeds (such as GRB or BRG), not the power wiring.
+7. Send t to check whether each step lights a three-LED group and whether all LEDs are covered. Adjust NUM_GROUPS if the group count differs.
+8. Send s/c/r for sunny, cloudy, and rainy lighting; send x to turn it off. This version does not control a misting module or water pump.
+9. If the strip stays dark, disconnect power and check DI/DO, common ground, level-shifter enable, and the supply. Do not start by setting full brightness. If the final group is affected by a random power-on state, send x again or disconnect power to investigate.
+10. Run stable lighting for 30 minutes while observing temperature rise, flicker, and resets. At the end, send x, disconnect strip 12V first, then disconnect USB.
 
-当前环境未发现 arduino-cli，未执行编译，也未连接实物烧录或通电测试。代码是待板端验证的初版；保存编译错误与测试结果再调整。
+At the time of this test record, arduino-cli was not found in the environment, so compilation was not performed, and no physical hardware was connected for upload or power-on testing. The code is an initial version pending board-level validation. Save compilation errors and test results before making adjustments.
 
-## 参考
+## References
 
-- FastLED 官方文档：https://fastled.io/docs/
-- WLED 接线与 AHCT125 说明：https://kno.wled.ge/basics/wiring-guides/
-- Espressif 相机引脚：https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/Camera/CameraWebServer/camera_pins.h
+- FastLED official documentation: https://fastled.io/docs/
+- WLED wiring and AHCT125 guidance: https://kno.wled.ge/basics/wiring-guides/
+- Espressif camera pins: https://github.com/espressif/arduino-esp32/blob/master/libraries/ESP32/examples/Camera/CameraWebServer/camera_pins.h

@@ -1,16 +1,16 @@
-# cloud_bot 版本工作流
+# cloud_bot version workflow
 
-## 每周更新
+## Weekly updates
 
-每周从项目实际进展开始：先记录硬件实测或代码变更，再更新 README、CHANGELOG 和对应阶段文档，最后运行本地检查并提交。没有新事实时不制造“进度”；可以提交文档校正或明确“本周无硬件变更”。
+Start each week with actual project progress: record physical hardware tests or code changes, then update README, CHANGELOG, and the relevant phase documentation, and finally run local checks and commit. Do not invent progress when there are no new facts. Documentation corrections or an explicit note that there were no hardware changes this week are valid updates.
 
-## 提交格式
+## Commit format
 
-- `feat:` 新功能或新阶段
-- `test:` 实测记录
-- `docs:` 文档与接线说明
-- `fix:` 修复代码或流程
+- `feat:` new functionality or a new phase
+- `test:` physical test records
+- `docs:` documentation and wiring instructions
+- `fix:` code or workflow fixes
 
-## 硬件变更记录
+## Hardware change records
 
-每次记录：日期、板型/模块、供电、接线、操作步骤、观察结果、结论、照片或日志位置。任何 12V、水路或高电流变更都要在断电后复核。
+Record the date, board/module, power supply, wiring, procedure, observations, conclusions, and photograph or log locations. Recheck any 12V, water-system, or high-current changes with power disconnected.

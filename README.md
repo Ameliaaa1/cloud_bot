@@ -1,62 +1,60 @@
 # cloud_bot
 
-cloud_bot 是一款桌面陪伴原型：用一朵云表达天气状态，并逐步连接摄像头、灯光、雾化和植物滴灌。
+cloud_bot is a desktop companion prototype: a cloud-shaped object expresses weather states, with camera, lighting, misting, and plant drip irrigation being integrated in stages.
 
-软件 v2 在 ESP32-CAM 本地网页上支持手动天气切换和摄像头预览，也可接收电脑摄像头表情识别给出的天气建议。仓库另有独立的 12V WS2811 类灯带台架测试程序。
+Software v2 provides manual weather switching and camera previews through a local ESP32-CAM web page. It can also receive weather suggestions from facial-expression recognition running on a computer webcam. The repository includes a separate bench-test program for a 12V WS2811-type LED strip.
 
-## 当前状态
+## Current status
 
-- 已完成：硬件盘点与边界说明、现有零件启动指南、ESP32-CAM 网页原型代码、灯带独立测试代码、上传脚本。
-- 表情联动 v2 通过 ONNX Runtime 在电脑上运行，支持独立微笑阈值和稳定等待时间。ESP32 负责手动与自动模式切换，自动信号中断后回到阴天。见[启动说明](EMOTION-CONTROL-README.md)。
-- 已完成 V7 概念建模：双插杆、可拆云骨架、水箱、灯带托架和摄像头托盘；现有报告记录 20 个组件、279 项建模历史。
-- 已记录 ESP32-CAM 编译、烧录、网页接口与摄像头取景验证。真人表情触发、实体灯带联动、雾化和滴灌待验证。见[软件验证记录](SOFTWARE-VALIDATION.md)。
-- V7 已完成首轮干式打印和试装。V8 和 V8.1 已导出 Fusion 模型与打印件，整机干式试装、支撑清理、结构稳定性和密封仍待实测。
-- 安全边界：12V 灯带不能接开发板供电；水路和大电流负载必须独立供电并具备默认关闭、限时与缺水保护。
+- Completed: hardware inventory and limitations, a getting-started guide for existing parts, ESP32-CAM web prototype code, standalone LED-strip test code, and upload scripts.
+- Expression control v2 runs on the computer using ONNX Runtime, with an independent smile threshold and a stability hold time. The ESP32 switches between manual and automatic modes and returns to cloudy when the automatic signal stops. See the [setup guide](EMOTION-CONTROL-README.md).
+- V7 concept modeling is complete: dual support rods, a removable cloud frame, water tank, LED-strip bracket, and camera tray. Existing reports record 20 components and 279 modeling-history entries.
+- ESP32-CAM compilation, flashing, web endpoints, and camera capture have been documented. Real-person expression triggers, physical LED-strip integration, misting, and drip irrigation remain pending validation. See the [software validation record](SOFTWARE-VALIDATION.md).
+- V7 has completed its first dry print and trial fit. V8 and V8.1 Fusion models and printable parts have been exported; full dry assembly, support removal, structural stability, and sealing still require physical testing.
+- Safety boundaries: do not power a 12V LED strip from the development board. Water systems and high-current loads require independent power, default-off behavior, runtime limits, and low-water protection.
 
-## 目录
+## Repository guide
 
-- `START-HERE-existing-parts.md`：只用现有零件启动网页原型。
-- `cloud_bot-prototype-plan.md`：整体目标、阶段计划、验收条件与风险边界。
-- `light-test-wiring.md`：12V 灯带与 AHCT125 电平转换的独立测试接线。
-- `firmware/cloud_bot_existing_parts/`：ESP32-CAM 网页天气/摄像头原型。
-- `firmware/cloud_bot_light_test/`：仅控制灯带的 FastLED 台架测试。
-- `tools/upload-cloud-bot.ps1`：编译并上传现有零件版本。
-- `emotion_control.py`：本地摄像头联动实验（需 OpenCV、requests 及所选识别引擎）。
-- `design/`：概念图、Fusion 建模脚本、打印文件和试装记录。
+- `START-HERE-existing-parts.md`: start the web prototype using only the parts already available.
+- `cloud_bot-prototype-plan.md`: overall goals, staged plan, acceptance criteria, and risk boundaries.
+- `light-test-wiring.md`: standalone wiring for a 12V LED strip and AHCT125 level shifting.
+- `firmware/cloud_bot_existing_parts/`: ESP32-CAM weather/camera web prototype.
+- `firmware/cloud_bot_light_test/`: LED-strip-only FastLED bench test.
+- `tools/upload-cloud-bot.ps1`: compile and upload the existing-parts version.
+- `emotion_control.py`: local webcam interaction experiment (requires OpenCV, requests, and the selected recognition engine).
+- `design/`: concept images, Fusion modeling scripts, print files, and trial-fit records.
 
-## V8.1 干式试装版本
+## V8.1 dry-fit version
 
-![V8.1 装配](design/v8-1-cad/CloudBot-V8.1-assembly.png)
+![V8.1 assembly](design/v8-1-cad/CloudBot-V8.1-assembly.png)
 
-- [V8.1 打印与试装](design/v8-1-cad/打印与试装.md)、[Fusion 模型](design/v8-1-cad/CloudBot-V8.1.f3d)和[整盘 STL](design/v8-1-cad/CloudBot-V8.1-dry-plate.stl)。V8.1 在 V8 的滑轨式一体底板基础上更新了水箱和双卡扣盖。
-- [V8 装配说明](design/v8-cad/组装与打印.md)保留了滑轨、灯带托板、插杆和摄像头托盘的装配说明。
+- [V8.1 printing and trial fit](design/v8-1-cad/打印与试装.md), [Fusion model](design/v8-1-cad/CloudBot-V8.1.f3d), and [full-plate STL](design/v8-1-cad/CloudBot-V8.1-dry-plate.stl). V8.1 updates the tank and dual-latch lid on V8's integrated sliding-rail base.
+- The [V8 assembly guide](design/v8-cad/组装与打印.md) retains the instructions for the rails, LED-strip support plate, rods, and camera tray.
 
-## V7 建模进度（2026-11-12）
+## V7 modeling progress (2026-11-12)
 
-![V7 概念装配](design/v7-cad/v7-assembly.png)
+![V7 concept assembly](design/v7-cad/v7-assembly.png)
 
-- [Fusion 原生模型](design/v7-cad/CloudBot-V7.f3d)：用于编辑组件、草图与建模历史。
-- [STEP 交换模型](design/v7-cad/CloudBot-V7.step)：用于跨 CAD 软件查看与交换。
-- [结构说明与下一轮验证](design/v7-cad/README-中文.md)、[内部结构图](design/v7-cad/v7-internals.png)。
-- [Fusion 生成脚本](design/fusion/CloudBotV7/CloudBotV7.py)、[现有检查报告](design/v7-cad/validation.json)。
-- [第一版打印 STL、实物照片与试装记录](design/v7-cad/README-中文.md#第一版实物试打记录)：原始单件和整盘 STL、实物照片、装配问题及下一轮试装计划。
+- [Native Fusion model](design/v7-cad/CloudBot-V7.f3d): edit components, sketches, and modeling history.
+- [STEP exchange model](design/v7-cad/CloudBot-V7.step): view and exchange the design across CAD software.
+- [Structure and next validation steps](design/v7-cad/README-中文.md), [internal layout](design/v7-cad/v7-internals.png).
+- [Fusion generation script](design/fusion/CloudBotV7/CloudBotV7.py), [existing validation report](design/v7-cad/validation.json).
+- [First-print STLs, photographs, and trial-fit record](design/v7-cad/README-中文.md#第一版实物试打记录): original individual-part and full-plate files, physical photographs, assembly issues, and the next trial-fit plan.
 
-当前设计为约 140 mm 宽的云外观、两根直径 3 mm 插杆和约 10 mL 工作容量的水箱。最终检查报告在所列结构件与硬件占位件范围内记录的干涉为空；该检查排除了装饰枝、电源线、外罩及参考花盆，也不代表防漏、强度或实物适配验证。本次上传核对了现有文件和报告，未重新运行 Fusion 或硬件测试。
+The current design has a cloud approximately 140 mm wide, two 3 mm-diameter support rods, and a tank with an approximately 10 mL working capacity. The final report records no interference within its listed structural parts and hardware placeholders. It excludes decorative branches, power cables, the outer covering, and the reference flowerpot, and does not establish leak resistance, strength, or physical fit. The publication checked existing files and reports; Fusion and hardware tests were not rerun.
 
-## 快速开始
+## Quick start
 
-1. 安装 Arduino IDE、Espressif Arduino-ESP32 3.x，并选择 AI Thinker ESP32-CAM。
-2. 按 [`START-HERE-existing-parts.md`](START-HERE-existing-parts.md) 连接 USB、上传并访问 `http://192.168.4.1`。
-3. 灯带测试必须先读完 [`light-test-wiring.md`](light-test-wiring.md)，确认 12V 电源、共地和电平转换后再通电。
+1. Install Arduino IDE and Espressif Arduino-ESP32 3.x, then select AI Thinker ESP32-CAM.
+2. Follow [`START-HERE-existing-parts.md`](START-HERE-existing-parts.md) to connect USB, upload, and visit `http://192.168.4.1`.
+3. Before testing the strip, read [`light-test-wiring.md`](light-test-wiring.md) in full and confirm the 12V supply, common ground, and level shifting before applying power.
 
-程序默认创建 Wi‑Fi 热点 `cloud_bot`，密码为 `set-a-local-password`。所有照片只在本地设备与浏览器之间传输，程序不保存或上传照片。
+By default, the program creates the `cloud_bot` Wi-Fi hotspot with password `set-a-local-password`. Photos are transferred only between local devices and the browser; the program does not store them or upload them to a remote service.
 
-## 开发约定
+## Development conventions
 
-每次硬件实测都应记录日期、板型/模块、供电条件、接线变更、现象和结论。未实测的参数保持“待确认”，不要直接升级为采购或验收结论。提交前至少检查文档与代码是否仍然一致。
+For every physical hardware test, record the date, board/module, power conditions, wiring changes, observations, and conclusions. Keep untested parameters marked as pending confirmation; do not turn them into purchasing or acceptance conclusions. Before committing, at minimum check that documentation and code remain consistent.
 
-## 许可证
+## License
 
-本项目采用 MIT License，见 [`LICENSE`](LICENSE)。硬件、电源和水路操作请遵守模块厂商说明，并在断电后接线。
-
-
+This project uses the MIT License; see [`LICENSE`](LICENSE). Follow module manufacturers' instructions for hardware, power, and water systems, and disconnect power before wiring.
