@@ -22,5 +22,8 @@ jobs:
           test -s cloud_bot-prototype-plan.md
           test -s firmware/cloud_bot_existing_parts/cloud_bot_existing_parts.ino
           test -s firmware/cloud_bot_light_test/cloud_bot_light_test.ino
-          grep -q "未完成" README.md
+          if ! grep -Eq "未完成|待验证|待实测" README.md; then
+            echo "::error file=README.md::README must retain an explicit unfinished or pending hardware validation status."
+            exit 1
+          fi
           grep -q "12V" light-test-wiring.md
